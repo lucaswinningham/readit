@@ -1,13 +1,3 @@
-#### Subs
-
-```bash
-$ rails g model sub name:string
-$ rails db:migrate
-```
-
-###### spec/model/sub_spec.rb
-
-```ruby
 require 'rails_helper'
 
 RSpec.describe Sub, type: :model do
@@ -23,24 +13,15 @@ RSpec.describe Sub, type: :model do
     it { should_not allow_values(*invalid_names).for(:name) }
     it { should allow_values(*valid_names).for(:name) }
   end
+
+  describe 'posts' do
+    it { should have_many(:posts) }
+
+    context 'on destroy' do
+      it 'should destroy associated posts' do
+        post = create_post
+        expect { post.sub.destroy }.to change { Post.count }.by(-1)
+      end
+    end
+  end
 end
-
-```
-
-###### app/model/sub.rb
-
-```ruby
-class Sub < ApplicationRecord
-  VALID_NAME_REGEX = /\A[a-zA-Z0-9]+\Z/
-  validates :name, presence: true, allow_blank: false, format: { with: VALID_NAME_REGEX },
-                   length: { minimum: 3, maximum: 21 }
-  validates_uniqueness_of :name, case_sensitive: false
-end
-
-```
-
-```bash
-$ guard
-$ rubocop
-```
-

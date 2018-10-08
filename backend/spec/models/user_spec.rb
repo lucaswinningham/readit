@@ -13,4 +13,25 @@ RSpec.describe User, type: :model do
     it { should_not allow_values(*invalid_names).for(:name) }
     it { should allow_values(*valid_names).for(:name) }
   end
+
+  describe 'posts' do
+    it { should have_many(:posts) }
+
+    context 'on destroy' do
+      it 'should deactivate associated posts' do
+        post = create_post
+        expect(post.active).to be true
+        post.user.destroy
+        post.reload
+        expect(post.active).to be false
+      end
+
+      it 'should nullify self on associated posts' do
+        post = create_post
+        post.user.destroy
+        post.reload
+        expect(post.user_id).to be_nil
+      end
+    end
+  end
 end

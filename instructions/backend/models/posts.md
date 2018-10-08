@@ -5,26 +5,7 @@ $ rails g model post user:belongs_to sub:belongs_to title:text url:string body:t
 $ rails db:migrate
 ```
 
-###### spec/support/generation_helper.rb
-
-```ruby
-module Helpers
-  module GenerationHelper
-    ...
-
-    def default_post_params
-      { user: create_user, sub: create_sub, title: 'Lorem ipsum', url: 'https://www.github.com' }
-    end
-
-    def create_post(params = {})
-      Post.create default_post_params.merge(params)
-    end
-  end
-end
-
-```
-
-###### spec/model/post_spec.rb
+###### spec/models/post_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -76,6 +57,38 @@ RSpec.describe Post, type: :model do
     it { should_not allow_values(*invalid_urls).for(:url) }
     it { should allow_values(*valid_urls).for(:url) }
   end
+end
+
+```
+
+###### app/models/post.rb
+
+```ruby
+class Post < ApplicationRecord
+  belongs_to :user
+  belongs_to :sub
+
+  validates :title, presence: true, allow_blank: false, length: { maximum: 256 }
+
+  validates :body, length: { maximum: 10_000 }
+
+  validates :url, uniqueness: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
+end
+
+```
+
+```bash
+$ guard
+$ rubocop
+```
+
+###### spec/models/post_spec.rb
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe Post, type: :model do
+  ...
 
   describe 'active' do
     context 'on create' do
@@ -88,18 +101,65 @@ end
 
 ```
 
-###### app/model/post.rb
+<!-- try faktory bot gem -->
+
+```bash
+$ touch spec/support/generation_helper.rb
+```
+
+###### spec/rails_helper.rb
+
+```ruby
+...
+
+RSpec.configure do |config|
+  ...
+
+  config.include Helpers::GenerationHelper, type: :model
+end
+
+...
+
+```
+
+###### spec/support/generation_helper.rb
+
+```ruby
+module Helpers
+  module GenerationHelper
+    def default_user_params
+      { name: 'user', email: 'user@user.com' }
+    end
+
+    def create_user(params = {})
+      User.create default_user_params.merge(params)
+    end
+
+    def default_sub_params
+      { name: 'politics' }
+    end
+
+    def create_sub(params = {})
+      Sub.create default_sub_params.merge(params)
+    end
+
+    def default_post_params
+      { user: create_user, sub: create_sub, title: 'Lorem ipsum', url: 'https://www.github.com' }
+    end
+
+    def create_post(params = {})
+      Post.create default_post_params.merge(params)
+    end
+  end
+end
+
+```
+
+###### app/models/post.rb
 
 ```ruby
 class Post < ApplicationRecord
-  belongs_to :user
-  belongs_to :sub
-
-  validates :title, presence: true, allow_blank: false, length: { maximum: 256 }
-
-  validates :body, length: { maximum: 10_000 }
-
-  validates :url, uniqueness: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
+  ...
 
   before_create :activate
 
@@ -113,13 +173,13 @@ end
 ```
 
 ```bash
-$ rspec
+$ guard
 $ rubocop
 ```
 
 ##### User Post Association
 
-###### spec/model/user_spec.rb
+###### spec/models/user_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -170,13 +230,13 @@ end
 ```
 
 ```bash
-$ rspec
+$ guard
 $ rubocop
 ```
 
 ##### Sub Post Association
 
-###### spec/model/sub_spec.rb
+###### spec/models/sub_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -210,7 +270,8 @@ end
 ```
 
 ```bash
-$ rspec
+$ guard
 $ rubocop
 ```
+
 
