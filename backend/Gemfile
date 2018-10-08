@@ -50,6 +50,18 @@ group :development, :test do
 
   # Use rubocop for static code analyzation
   gem 'rubocop'
+
+  # Use Faker for seeding the database
+  gem 'faker'
+
+  # Use guard for automatically running tests
+  gem 'guard-rspec'
+
+  # Use rspec for testing
+  gem 'rspec-rails'
+
+  # Use shoulda-matchers for easy testing
+  gem 'shoulda-matchers'
 end
 
 # Use figaro for environment variables

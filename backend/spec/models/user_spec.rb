@@ -1,13 +1,3 @@
-#### Users
-
-```bash
-$ rails g model user name:string email:string
-$ rails db:migrate
-```
-
-###### spec/model/user_spec.rb
-
-```ruby
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -24,23 +14,3 @@ RSpec.describe User, type: :model do
     it { should allow_values(*valid_names).for(:name) }
   end
 end
-
-```
-
-<!-- add email validations -->
-###### app/model/user.rb
-
-```ruby
-class User < ActiveRecord::Base
-  VALID_NAME_REGEX = /\A[A-Za-z0-9_\-]+\Z/
-  validates :name, presence: true, allow_blank: false, uniqueness: true,
-                   format: { with: VALID_NAME_REGEX }, length: { minimum: 3, maximum: 20 }
-end
-
-```
-
-```bash
-$ guard
-$ rubocop
-```
-

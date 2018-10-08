@@ -144,3 +144,110 @@ $ createuser -d redditapp
 $ rails db:create
 ```
 
+## Test Setup
+
+###### Gemfile
+
+```ruby
+...
+
+#
+# Added
+#
+
+group :development, :test do
+  ...
+
+  # Use Faker for seeding the database
+  gem 'faker'
+
+  # Use guard for automatically running tests
+  gem 'guard-rspec'
+
+  # Use rspec for testing
+  gem 'rspec-rails'
+
+  # Use shoulda-matchers for easy testing
+  gem 'shoulda-matchers'
+end
+
+```
+
+```bash
+$ bundle
+$ bundle exec guard init rspec
+$ rails g rspec:install
+```
+
+###### Guardfile
+
+```ruby
+...
+
+guard :rspec, cmd: 'bundle exec rspec' do
+  ...
+
+  watch(rails.controllers) do |m|
+    [
+      ...,
+      rspec.spec.call("requests/#{m[1]}")
+    ]
+  end
+
+  ...
+end
+
+```
+
+```bash
+$ guard
+```
+
+###### spec/rails_helper.rb
+
+```ruby
+...
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
+```
+
+```bash
+$ mkdir spec/support
+$ touch spec/support/validation_helper.rb
+```
+
+###### spec/rails_helper.rb
+
+```ruby
+...
+
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+RSpec.configure do |config|
+  ...
+
+  config.include Helpers::ValidationHelper, type: :model
+end
+
+...
+
+```
+
+###### spec/support/validation_helper.rb
+
+```ruby
+module Helpers
+  module ValidationHelper
+    def blank_values
+      ['', ' ', "\n", "\r", "\t", "\f"]
+    end
+  end
+end
+
+```
