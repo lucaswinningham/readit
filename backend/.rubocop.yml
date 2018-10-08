@@ -1,0 +1,24 @@
+AllCops:
+  Exclude:
+    - 'Rakefile'
+    - 'Gemfile'
+    - 'Guardfile'
+    - 'bin/*'
+    - 'config/environments/*'
+    - 'config/initializers/*'
+    - 'config/application.rb'
+    - 'config/puma.rb'
+    - 'config/spring.rb'
+    - 'db/migrate/*'
+    - 'db/schema.rb'
+    - 'db/seeds.rb'
+    - 'spec/*_helper.rb'
+Documentation:
+  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'
+Metrics/LineLength:
+  Max: 100
+Metrics/MethodLength:
+  Max: 15
