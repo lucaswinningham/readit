@@ -62,6 +62,9 @@ group :development, :test do
 
   # Use shoulda-matchers for easy testing
   gem 'shoulda-matchers'
+
+  # Use Factory Bot for test fixtures
+  gem 'factory_bot'
 end
 
 # Use figaro for environment variables

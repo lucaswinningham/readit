@@ -51,7 +51,7 @@ RSpec.describe Post, type: :model do
   describe 'active' do
     context 'on create' do
       it 'should be true' do
-        expect(create_post.active).to be true
+        expect(create(:post).active).to be true
       end
     end
   end

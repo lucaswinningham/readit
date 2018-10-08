@@ -19,7 +19,7 @@ RSpec.describe User, type: :model do
 
     context 'on destroy' do
       it 'should deactivate associated posts' do
-        post = create_post
+        post = create(:post)
         expect(post.active).to be true
         post.user.destroy
         post.reload
@@ -27,7 +27,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should nullify self on associated posts' do
-        post = create_post
+        post = create(:post)
         post.user.destroy
         post.reload
         expect(post.user_id).to be_nil

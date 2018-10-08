@@ -19,7 +19,7 @@ RSpec.describe Sub, type: :model do
 
     context 'on destroy' do
       it 'should destroy associated posts' do
-        post = create_post
+        post = create(:post)
         expect { post.sub.destroy }.to change { Post.count }.by(-1)
       end
     end

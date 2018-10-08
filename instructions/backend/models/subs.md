@@ -40,7 +40,7 @@ end
 ```
 
 ```bash
-$ guard
+$ rspec
 $ rubocop
 ```
 

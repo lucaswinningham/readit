@@ -59,7 +59,7 @@ RSpec.configure do |config|
 
   config.include Helpers::ValidationHelper, type: :model
 
-  config.include Helpers::GenerationHelper, type: :model
+  config.include FactoryBot::Syntax::Methods
 end
 
 Shoulda::Matchers.configure do |config|
