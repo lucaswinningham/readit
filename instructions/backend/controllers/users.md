@@ -1,3 +1,103 @@
+#### Users
+
+```bash
+$ rails g scaffold_controller user
+$ rm spec/requests/users_spec.rb
+```
+
+###### spec/routing/users_routing_spec.rb
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe UsersController, type: :routing do
+  describe 'routing' do
+    let(:user) { create :user }
+
+    it 'routes to #index' do
+      expect(get: '/users').to route_to('users#index')
+    end
+
+    it 'routes to #show' do
+      expect(get: "/users/#{user.name}").to route_to('users#show', name: user.name)
+    end
+
+    it 'routes to #create' do
+      expect(post: '/users').to route_to('users#create')
+    end
+
+    it 'routes to #update via PUT' do
+      expect(put: "/users/#{user.name}").to route_to('users#update', name: user.name)
+    end
+
+    it 'routes to #update via PATCH' do
+      expect(patch: "/users/#{user.name}").to route_to('users#update', name: user.name)
+    end
+
+    it 'routes to #destroy' do
+      expect(delete: "/users/#{user.name}").to route_to('users#destroy', name: user.name)
+    end
+  end
+end
+
+```
+
+###### config/routes.rb
+
+```ruby
+Rails.application.routes.draw do
+  resources :users, param: :name
+end
+
+```
+
+```bash
+$ rspec spec/routing
+$ rubocop
+```
+
+###### spec/models/user_spec.rb
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  describe 'to_param' do
+    it 'overrides #to_param with name attribute' do
+      user = create :user
+      expect(user.to_param).to eq(user.name)
+    end
+  end
+  
+  ...
+end
+
+```
+
+###### app/models/user.rb
+
+```ruby
+class User < ActiveRecord::Base
+  ...
+
+  def to_param
+    name
+  end
+
+  private
+
+  ...
+end
+```
+
+```bash
+$ rspec spec/routing
+$ rubocop
+```
+
+###### spec/controllers/users_controller_spec.rb
+
+```ruby
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
@@ -57,7 +157,6 @@ RSpec.describe UsersController, type: :controller do
         user = build :user, name: 'other', email: 'other@email.com'
         user_params = { name: user.name, email: user.email }
         update_request = { params: { name: original_user.to_param, user: user_params } }
-
         put :update, update_request
 
         expect(response).to have_http_status(:ok)
@@ -93,3 +192,62 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 end
+
+```
+
+###### app/controllers/users_controller.rb
+
+```ruby
+class UsersController < ApplicationController
+  before_action :set_user, only: %i[show update destroy]
+
+  def index
+    @users = User.all
+
+    render json: @users
+  end
+
+  def show
+    render json: @user
+  end
+
+  def create
+    @user = User.new(user_params)
+
+    if @user.save
+      render json: @user, status: :created, location: @user
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @user.update(user_params)
+      render json: @user
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @user.destroy
+  end
+
+  private
+
+  def set_user
+    @user = User.find_by_name!(params[:name])
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email)
+  end
+end
+
+```
+
+```bash
+$ rspec
+$ rubocop
+```
+

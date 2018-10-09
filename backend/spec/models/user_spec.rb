@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  describe 'to_param' do
+    it 'overrides #to_param with name attribute' do
+      user = create :user
+      expect(user.to_param).to eq(user.name)
+    end
+  end
+
   describe 'name' do
     invalid_names = ['username!', 'username?', 'username*', 'username#', 'user name']
     valid_names = ['username', 'user-name', 'user_name', 'user1name', '_username_', '-username-',

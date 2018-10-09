@@ -6,6 +6,10 @@ class User < ActiveRecord::Base
   has_many :posts, dependent: :nullify
   before_destroy :deactivate_posts, prepend: true
 
+  def to_param
+    name
+  end
+
   private
 
   def deactivate_posts

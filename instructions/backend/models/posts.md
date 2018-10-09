@@ -93,7 +93,8 @@ RSpec.describe Post, type: :model do
   describe 'active' do
     context 'on create' do
       it 'should be true' do
-        expect(create(:post).active).to be true
+        post = create :post
+        expect(post.active).to be true
       end
     end
   end
@@ -147,8 +148,8 @@ $ touch spec/support/factories.rb
 ```ruby
 FactoryBot.define do
   factory :user do
-    name { 'goat' }
-    email { 'goat@email.com' }
+    name { 'some_user' }
+    email { 'some_user@email.com' }
   end
 
   factory :sub do
@@ -202,7 +203,7 @@ RSpec.describe User, type: :model do
 
     context 'on destroy' do
       it 'should deactivate associated posts' do
-        post = create(:post)
+        post = create :post
         expect(post.active).to be true
         post.user.destroy
         post.reload
@@ -210,7 +211,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should nullify self on associated posts' do
-        post = create(:post)
+        post = create :post
         post.user.destroy
         post.reload
         expect(post.user_id).to be_nil
@@ -259,7 +260,7 @@ RSpec.describe Sub, type: :model do
 
     context 'on destroy' do
       it 'should destroy associated posts' do
-        post = create(:post)
+        post = create :post
         expect { post.sub.destroy }.to change { Post.count }.by(-1)
       end
     end
