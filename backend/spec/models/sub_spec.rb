@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Sub, type: :model do
+  describe 'to_param' do
+    it 'overrides #to_param with name attribute' do
+      sub = create :sub
+      expect(sub.to_param).to eq(sub.name)
+    end
+  end
+
   describe 'name' do
     invalid_names = ['sub-name', 'sub_name', '_subname_', '-subname-', 'subname!', 'subname?',
                      'subname*', 'subname#']

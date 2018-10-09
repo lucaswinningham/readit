@@ -91,7 +91,7 @@ end
 ```
 
 ```bash
-$ rspec spec/routing
+$ rspec spec/models
 $ rubocop
 ```
 

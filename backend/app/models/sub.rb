@@ -5,4 +5,8 @@ class Sub < ApplicationRecord
   validates_uniqueness_of :name, case_sensitive: false
 
   has_many :posts, dependent: :destroy
+
+  def to_param
+    name
+  end
 end

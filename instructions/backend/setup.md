@@ -239,6 +239,8 @@ end
 
 ```
 
+<!-- add the urls from post? -->
+
 ###### spec/support/validation_helper.rb
 
 ```ruby
@@ -251,3 +253,4 @@ module Helpers
 end
 
 ```
+

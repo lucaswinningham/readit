@@ -1,3 +1,9 @@
 Rails.application.routes.draw do
-  resources :users, param: :name
+  concern(:postable) { resources :posts }
+  
+  user_concerns = [:postable]
+  resources :users, param: :name, concerns: user_concerns
+
+  sub_concerns = [:postable]
+  resources :subs, param: :name, concerns: sub_concerns
 end
