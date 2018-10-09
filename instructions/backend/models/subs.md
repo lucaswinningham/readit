@@ -5,7 +5,7 @@ $ rails g model sub name:string
 $ rails db:migrate
 ```
 
-###### spec/model/sub_spec.rb
+###### spec/models/sub_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -27,7 +27,7 @@ end
 
 ```
 
-###### app/model/sub.rb
+###### app/models/sub.rb
 
 ```ruby
 class Sub < ApplicationRecord

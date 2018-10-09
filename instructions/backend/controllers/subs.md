@@ -12,30 +12,33 @@ require 'rails_helper'
 
 RSpec.describe SubsController, type: :routing do
   describe 'routing' do
-    let(:sub) { create :sub }
+    let(:existing_sub) { create :sub }
+    let(:collection_route) { '/subs' }
+    let(:member_route) { "/subs/#{existing_sub.name}" }
+    let(:member_params) { { name: existing_sub.name } }
 
     it 'routes to #index' do
-      expect(get: '/subs').to route_to('subs#index')
+      expect(get: collection_route).to route_to('subs#index')
     end
 
     it 'routes to #show' do
-      expect(get: "/subs/#{sub.name}").to route_to('subs#show', name: sub.name)
+      expect(get: member_route).to route_to('subs#show', member_params)
     end
 
     it 'routes to #create' do
-      expect(post: '/subs').to route_to('subs#create')
+      expect(post: collection_route).to route_to('subs#create')
     end
 
     it 'routes to #update via PUT' do
-      expect(put: "/subs/#{sub.name}").to route_to('subs#update', name: sub.name)
+      expect(put: member_route).to route_to('subs#update', member_params)
     end
 
     it 'routes to #update via PATCH' do
-      expect(patch: "/subs/#{sub.name}").to route_to('subs#update', name: sub.name)
+      expect(patch: member_route).to route_to('subs#update', member_params)
     end
 
     it 'routes to #destroy' do
-      expect(delete: "/subs/#{sub.name}").to route_to('subs#destroy', name: sub.name)
+      expect(delete: member_route).to route_to('subs#destroy', member_params)
     end
   end
 end
@@ -111,8 +114,8 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      sub = create :sub
-      show_request = { params: { name: sub.to_param } }
+      existing_sub = create :sub
+      show_request = { params: { name: existing_sub.to_param } }
       get :show, show_request
 
       expect(response).to have_http_status(:ok)
@@ -123,8 +126,8 @@ RSpec.describe SubsController, type: :controller do
   describe 'POST #create' do
     context 'with valid params' do
       it 'returns a success response and creates the requested sub' do
-        sub = build :sub
-        sub_params = { name: sub.name }
+        new_sub = build :sub
+        sub_params = { name: new_sub.name }
         create_request = { params: { sub: sub_params } }
 
         expect { post :create, create_request }.to change { Sub.count }.by(1)
@@ -137,8 +140,8 @@ RSpec.describe SubsController, type: :controller do
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the new sub' do
-        sub = build :sub, name: ''
-        sub_params = { name: sub.name }
+        new_sub = build :sub, name: ''
+        sub_params = { name: new_sub.name }
         create_request = { params: { sub: sub_params } }
 
         post :create, create_request
@@ -151,26 +154,26 @@ RSpec.describe SubsController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       it 'returns a success response and updates the requested sub' do
-        original_sub = create :sub
-        sub = build :sub, name: 'other'
-        sub_params = { name: sub.name }
-        update_request = { params: { name: original_sub.to_param, sub: sub_params } }
+        existing_sub = create :sub
+        sub_updated = build :sub, name: 'other'
+        sub_params = { name: sub_updated.name }
+        update_request = { params: { name: existing_sub.to_param, sub: sub_params } }
         put :update, update_request
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
-        original_sub.reload
-        assert_equal sub.name, original_sub.name
+        existing_sub.reload
+        assert_equal sub_updated.name, existing_sub.name
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the sub' do
-        original_sub = create :sub
-        sub = build :sub, name: ''
-        sub_params = { name: sub.name }
-        update_request = { params: { name: original_sub.to_param, sub: sub_params } }
+        existing_sub = create :sub
+        sub_updated = build :sub, name: ''
+        sub_params = { name: sub_updated.name }
+        update_request = { params: { name: existing_sub.to_param, sub: sub_params } }
         put :update, update_request
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -181,8 +184,8 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested sub' do
-      sub = create :sub
-      destroy_request = { params: { name: sub.to_param } }
+      existing_sub = create :sub
+      destroy_request = { params: { name: existing_sub.to_param } }
 
       expect { delete :destroy, destroy_request }.to change { Sub.count }.by(-1)
       expect(response).to have_http_status(:no_content)

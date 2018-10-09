@@ -5,7 +5,7 @@ $ rails g model user name:string email:string
 $ rails db:migrate
 ```
 
-###### spec/model/user_spec.rb
+###### spec/models/user_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -28,7 +28,7 @@ end
 ```
 
 <!-- add email validations -->
-###### app/model/user.rb
+###### app/models/user.rb
 
 ```ruby
 class User < ActiveRecord::Base

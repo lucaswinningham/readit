@@ -60,6 +60,8 @@ end
 $ touch .rubocop.yml
 ```
 
+<!-- don't add all files, add as you go i.e. Guardfile doesn't exist yet -->
+
 ###### .rubocop.yml
 
 ```yaml
@@ -92,6 +94,9 @@ Metrics/MethodLength:
 
 ```bash
 $ rubocop
+```
+
+```bash
 $ bundle exec figaro install
 ```
 
@@ -171,35 +176,13 @@ group :development, :test do
   gem 'shoulda-matchers'
 end
 
+...
 ```
 
 ```bash
 $ bundle
 $ bundle exec guard init rspec
 $ rails g rspec:install
-```
-
-###### Guardfile
-
-```ruby
-...
-
-guard :rspec, cmd: 'bundle exec rspec' do
-  ...
-
-  watch(rails.controllers) do |m|
-    [
-      ...,
-      rspec.spec.call("requests/#{m[1]}")
-    ]
-  end
-
-  ...
-end
-
-```
-
-```bash
 $ guard
 ```
 
