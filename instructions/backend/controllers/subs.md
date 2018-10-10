@@ -104,8 +104,7 @@ require 'rails_helper'
 RSpec.describe SubsController, type: :controller do
   describe 'GET #index' do
     it 'returns a success response' do
-      index_request = { params: {} }
-      get :index, index_request
+      get :index
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -115,8 +114,8 @@ RSpec.describe SubsController, type: :controller do
   describe 'GET #show' do
     it 'returns a success response' do
       existing_sub = create :sub
-      show_request = { params: { name: existing_sub.to_param } }
-      get :show, show_request
+      params = { name: existing_sub.to_param }
+      get :show, params: params
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -127,10 +126,9 @@ RSpec.describe SubsController, type: :controller do
     context 'with valid params' do
       it 'returns a success response and creates the requested sub' do
         new_sub = build :sub
-        sub_params = { name: new_sub.name }
-        create_request = { params: { sub: sub_params } }
+        params = { sub: new_sub.as_json }
 
-        expect { post :create, create_request }.to change { Sub.count }.by(1)
+        expect { post :create, params: params }.to change { Sub.count }.by(1)
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
@@ -141,10 +139,9 @@ RSpec.describe SubsController, type: :controller do
     context 'with invalid params' do
       it 'renders a JSON response with errors for the new sub' do
         new_sub = build :sub, name: ''
-        sub_params = { name: new_sub.name }
-        create_request = { params: { sub: sub_params } }
+        params = { sub: new_sub.as_json }
+        post :create, params: params
 
-        post :create, create_request
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
@@ -155,26 +152,24 @@ RSpec.describe SubsController, type: :controller do
     context 'with valid params' do
       it 'returns a success response and updates the requested sub' do
         existing_sub = create :sub
-        sub_updated = build :sub, name: 'other'
-        sub_params = { name: sub_updated.name }
-        update_request = { params: { name: existing_sub.to_param, sub: sub_params } }
-        put :update, update_request
+        sub_patch = build :sub, name: 'other'
+        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
         existing_sub.reload
-        assert_equal sub_updated.name, existing_sub.name
+        assert_equal sub_patch.name, existing_sub.name
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the sub' do
         existing_sub = create :sub
-        sub_updated = build :sub, name: ''
-        sub_params = { name: sub_updated.name }
-        update_request = { params: { name: existing_sub.to_param, sub: sub_params } }
-        put :update, update_request
+        sub_patch = build :sub, name: ''
+        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
@@ -185,9 +180,10 @@ RSpec.describe SubsController, type: :controller do
   describe 'DELETE #destroy' do
     it 'destroys the requested sub' do
       existing_sub = create :sub
-      destroy_request = { params: { name: existing_sub.to_param } }
+      params = { name: existing_sub.to_param }
 
-      expect { delete :destroy, destroy_request }.to change { Sub.count }.by(-1)
+      expect { delete :destroy, params: params }.to change { Sub.count }.by(-1)
+
       expect(response).to have_http_status(:no_content)
     end
   end
