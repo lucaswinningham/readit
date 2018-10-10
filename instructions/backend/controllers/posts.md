@@ -103,93 +103,95 @@ end
 require 'rails_helper'
 
 RSpec.describe PostsController, type: :controller do
-  describe 'GET #index' do
-    it 'returns a success response' do
-      index_request = { params: {} }
-      get :index, index_request
-
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to eq('application/json')
-    end
-  end
-
-  describe 'GET #show' do
-    it 'returns a success response' do
-      post = create :post
-      show_request = { params: { name: post.to_param } }
-      get :show, show_request
-
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to eq('application/json')
-    end
-  end
-
-  describe 'POST #create' do
-    context 'with valid params' do
-      it 'returns a success response and creates the requested post' do
-        post = build :post
-        post_params = { name: post.name }
-        create_request = { params: { post: post_params } }
-
-        expect { post :create, create_request }.to change { Post.count }.by(1)
-
-        expect(response).to have_http_status(:created)
-        expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(post_url(Post.last))
-      end
-    end
-
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the new post' do
-        post = build :post, name: ''
-        post_params = { name: post.name }
-        create_request = { params: { post: post_params } }
-
-        post :create, create_request
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
-      end
-    end
-  end
-
-  describe 'PUT #update' do
-    context 'with valid params' do
-      it 'returns a success response and updates the requested post' do
-        original_post = create :post
-        post = build :post, name: 'other'
-        post_params = { name: post.name }
-        update_request = { params: { name: original_post.to_param, post: post_params } }
-        put :update, update_request
+  describe 'users concerns' do
+    describe 'GET #index' do
+      it 'returns a success response' do
+        index_request = { params: {} }
+        get :index, index_request
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
-
-        original_post.reload
-        assert_equal post.name, original_post.name
       end
     end
 
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the post' do
-        original_post = create :post
-        post = build :post, name: ''
-        post_params = { name: post.name }
-        update_request = { params: { name: original_post.to_param, post: post_params } }
-        put :update, update_request
+    describe 'GET #show' do
+      it 'returns a success response' do
+        post = create :post
+        show_request = { params: { name: post.to_param } }
+        get :show, show_request
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
       end
     end
-  end
 
-  describe 'DELETE #destroy' do
-    it 'destroys the requested post' do
-      post = create :post
-      destroy_request = { params: { name: post.to_param } }
+    describe 'POST #create' do
+      context 'with valid params' do
+        it 'returns a success response and creates the requested post' do
+          post = build :post
+          post_params = { name: post.name }
+          create_request = { params: { post: post_params } }
 
-      expect { delete :destroy, destroy_request }.to change { Post.count }.by(-1)
-      expect(response).to have_http_status(:no_content)
+          expect { post :create, create_request }.to change { Post.count }.by(1)
+
+          expect(response).to have_http_status(:created)
+          expect(response.content_type).to eq('application/json')
+          expect(response.location).to eq(post_url(Post.last))
+        end
+      end
+
+      context 'with invalid params' do
+        it 'renders a JSON response with errors for the new post' do
+          post = build :post, name: ''
+          post_params = { name: post.name }
+          create_request = { params: { post: post_params } }
+
+          post :create, create_request
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.content_type).to eq('application/json')
+        end
+      end
+    end
+
+    describe 'PUT #update' do
+      context 'with valid params' do
+        it 'returns a success response and updates the requested post' do
+          original_post = create :post
+          post = build :post, name: 'other'
+          post_params = { name: post.name }
+          update_request = { params: { name: original_post.to_param, post: post_params } }
+          put :update, update_request
+
+          expect(response).to have_http_status(:ok)
+          expect(response.content_type).to eq('application/json')
+
+          original_post.reload
+          assert_equal post.name, original_post.name
+        end
+      end
+
+      context 'with invalid params' do
+        it 'renders a JSON response with errors for the post' do
+          original_post = create :post
+          post = build :post, name: ''
+          post_params = { name: post.name }
+          update_request = { params: { name: original_post.to_param, post: post_params } }
+          put :update, update_request
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.content_type).to eq('application/json')
+        end
+      end
+    end
+
+    describe 'DELETE #destroy' do
+      it 'destroys the requested post' do
+        post = create :post
+        destroy_request = { params: { name: post.to_param } }
+
+        expect { delete :destroy, destroy_request }.to change { Post.count }.by(-1)
+        expect(response).to have_http_status(:no_content)
+      end
     end
   end
 end

@@ -84,6 +84,8 @@ end
 $ touch .rubocop.yml
 ```
 
+<!-- don't add all files, add as you go i.e. Guardfile doesn't exist yet -->
+
 ###### .rubocop.yml
 
 ```yaml
@@ -116,6 +118,9 @@ Metrics/MethodLength:
 
 ```bash
 $ rubocop
+```
+
+```bash
 $ bundle exec figaro install
 ```
 
@@ -195,35 +200,13 @@ group :development, :test do
   gem 'shoulda-matchers'
 end
 
+...
 ```
 
 ```bash
 $ bundle
 $ bundle exec guard init rspec
 $ rails g rspec:install
-```
-
-###### Guardfile
-
-```ruby
-...
-
-guard :rspec, cmd: 'bundle exec rspec' do
-  ...
-
-  watch(rails.controllers) do |m|
-    [
-      ...,
-      rspec.spec.call("requests/#{m[1]}")
-    ]
-  end
-
-  ...
-end
-
-```
-
-```bash
 $ guard
 ```
 
@@ -287,7 +270,7 @@ $ rails g model user name:string email:string
 $ rails db:migrate
 ```
 
-###### spec/model/user_spec.rb
+###### spec/models/user_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -310,7 +293,7 @@ end
 ```
 
 <!-- add email validations -->
-###### app/model/user.rb
+###### app/models/user.rb
 
 ```ruby
 class User < ActiveRecord::Base
@@ -333,7 +316,7 @@ $ rails g model sub name:string
 $ rails db:migrate
 ```
 
-###### spec/model/sub_spec.rb
+###### spec/models/sub_spec.rb
 
 ```ruby
 require 'rails_helper'
@@ -355,7 +338,7 @@ end
 
 ```
 
-###### app/model/sub.rb
+###### app/models/sub.rb
 
 ```ruby
 class Sub < ApplicationRecord
@@ -676,30 +659,33 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :routing do
   describe 'routing' do
-    let(:user) { create :user }
+    let(:existing_user) { create :user }
+    let(:collection_route) { '/users' }
+    let(:member_route) { "/users/#{existing_user.name}" }
+    let(:member_params) { { name: existing_user.name } }
 
     it 'routes to #index' do
-      expect(get: '/users').to route_to('users#index')
+      expect(get: collection_route).to route_to('users#index')
     end
 
     it 'routes to #show' do
-      expect(get: "/users/#{user.name}").to route_to('users#show', name: user.name)
+      expect(get: member_route).to route_to('users#show', member_params)
     end
 
     it 'routes to #create' do
-      expect(post: '/users').to route_to('users#create')
+      expect(post:collection_route).to route_to('users#create')
     end
 
     it 'routes to #update via PUT' do
-      expect(put: "/users/#{user.name}").to route_to('users#update', name: user.name)
+      expect(put: member_route).to route_to('users#update', member_params)
     end
 
     it 'routes to #update via PATCH' do
-      expect(patch: "/users/#{user.name}").to route_to('users#update', name: user.name)
+      expect(patch: member_route).to route_to('users#update', member_params)
     end
 
     it 'routes to #destroy' do
-      expect(delete: "/users/#{user.name}").to route_to('users#destroy', name: user.name)
+      expect(delete: member_route).to route_to('users#destroy', member_params)
     end
   end
 end
@@ -728,8 +714,8 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   describe 'to_param' do
     it 'overrides #to_param with name attribute' do
-      user = create :user
-      expect(user.to_param).to eq(user.name)
+      existing_user = create :user
+      expect(existing_user.to_param).to eq(existing_user.name)
     end
   end
   
@@ -767,8 +753,7 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   describe 'GET #index' do
     it 'returns a success response' do
-      index_request = { params: {} }
-      get :index, index_request
+      get :index
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -777,9 +762,9 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      user = create :user
-      show_request = { params: { name: user.to_param } }
-      get :show, show_request
+      existing_user = create :user
+      params = { name: existing_user.to_param }
+      get :show, params: params
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -789,11 +774,10 @@ RSpec.describe UsersController, type: :controller do
   describe 'POST #create' do
     context 'with valid params' do
       it 'returns a success response and creates the requested user' do
-        user = build :user
-        user_params = { name: user.name, email: user.email }
-        create_request = { params: { user: user_params } }
+        new_user = build :user
+        params = { user: new_user.as_json }
 
-        expect { post :create, create_request }.to change { User.count }.by(1)
+        expect { post :create, params: params }.to change { User.count }.by(1)
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
@@ -803,11 +787,10 @@ RSpec.describe UsersController, type: :controller do
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the new user' do
-        user = build :user, name: '', email: ''
-        user_params = { name: user.name, email: user.email }
-        create_request = { params: { user: user_params } }
+        new_user = build :user, name: '', email: ''
+        params = { user: new_user.as_json }
+        post :create, params: params
 
-        post :create, create_request
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
@@ -817,28 +800,26 @@ RSpec.describe UsersController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       it 'returns a success response and updates the requested user' do
-        original_user = create :user
-        user = build :user, name: 'other', email: 'other@email.com'
-        user_params = { name: user.name, email: user.email }
-        update_request = { params: { name: original_user.to_param, user: user_params } }
-        put :update, update_request
+        existing_user = create :user
+        user_patch = build :user, name: 'other', email: 'other@email.com'
+        params = { name: existing_user.to_param, user: user_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
-        original_user.reload
-        assert_equal user.name, original_user.name
-        assert_equal user.email, original_user.email
+        existing_user.reload
+        assert_equal user_patch.name, existing_user.name
+        assert_equal user_patch.email, existing_user.email
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the user' do
-        original_user = create :user
-        user = build :user, name: '', email: ''
-        user_params = { name: user.name, email: user.email }
-        update_request = { params: { name: original_user.to_param, user: user_params } }
-        put :update, update_request
+        existing_user = create :user
+        user_patch = build :user, name: '', email: ''
+        params = { name: existing_user.to_param, user: user_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
@@ -848,10 +829,11 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested user' do
-      user = create :user
-      destroy_request = { params: { name: user.to_param } }
+      existing_user = create :user
+      params = { name: existing_user.to_param }
 
-      expect { delete :destroy, destroy_request }.to change { User.count }.by(-1)
+      expect { delete :destroy, params: params }.to change { User.count }.by(-1)
+
       expect(response).to have_http_status(:no_content)
     end
   end
@@ -929,30 +911,33 @@ require 'rails_helper'
 
 RSpec.describe SubsController, type: :routing do
   describe 'routing' do
-    let(:sub) { create :sub }
+    let(:existing_sub) { create :sub }
+    let(:collection_route) { '/subs' }
+    let(:member_route) { "/subs/#{existing_sub.name}" }
+    let(:member_params) { { name: existing_sub.name } }
 
     it 'routes to #index' do
-      expect(get: '/subs').to route_to('subs#index')
+      expect(get: collection_route).to route_to('subs#index')
     end
 
     it 'routes to #show' do
-      expect(get: "/subs/#{sub.name}").to route_to('subs#show', name: sub.name)
+      expect(get: member_route).to route_to('subs#show', member_params)
     end
 
     it 'routes to #create' do
-      expect(post: '/subs').to route_to('subs#create')
+      expect(post: collection_route).to route_to('subs#create')
     end
 
     it 'routes to #update via PUT' do
-      expect(put: "/subs/#{sub.name}").to route_to('subs#update', name: sub.name)
+      expect(put: member_route).to route_to('subs#update', member_params)
     end
 
     it 'routes to #update via PATCH' do
-      expect(patch: "/subs/#{sub.name}").to route_to('subs#update', name: sub.name)
+      expect(patch: member_route).to route_to('subs#update', member_params)
     end
 
     it 'routes to #destroy' do
-      expect(delete: "/subs/#{sub.name}").to route_to('subs#destroy', name: sub.name)
+      expect(delete: member_route).to route_to('subs#destroy', member_params)
     end
   end
 end
@@ -1018,8 +1003,7 @@ require 'rails_helper'
 RSpec.describe SubsController, type: :controller do
   describe 'GET #index' do
     it 'returns a success response' do
-      index_request = { params: {} }
-      get :index, index_request
+      get :index
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -1028,9 +1012,9 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      sub = create :sub
-      show_request = { params: { name: sub.to_param } }
-      get :show, show_request
+      existing_sub = create :sub
+      params = { name: existing_sub.to_param }
+      get :show, params: params
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq('application/json')
@@ -1040,11 +1024,10 @@ RSpec.describe SubsController, type: :controller do
   describe 'POST #create' do
     context 'with valid params' do
       it 'returns a success response and creates the requested sub' do
-        sub = build :sub
-        sub_params = { name: sub.name }
-        create_request = { params: { sub: sub_params } }
+        new_sub = build :sub
+        params = { sub: new_sub.as_json }
 
-        expect { post :create, create_request }.to change { Sub.count }.by(1)
+        expect { post :create, params: params }.to change { Sub.count }.by(1)
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
@@ -1054,11 +1037,10 @@ RSpec.describe SubsController, type: :controller do
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the new sub' do
-        sub = build :sub, name: ''
-        sub_params = { name: sub.name }
-        create_request = { params: { sub: sub_params } }
+        new_sub = build :sub, name: ''
+        params = { sub: new_sub.as_json }
+        post :create, params: params
 
-        post :create, create_request
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end
@@ -1068,27 +1050,25 @@ RSpec.describe SubsController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       it 'returns a success response and updates the requested sub' do
-        original_sub = create :sub
-        sub = build :sub, name: 'other'
-        sub_params = { name: sub.name }
-        update_request = { params: { name: original_sub.to_param, sub: sub_params } }
-        put :update, update_request
+        existing_sub = create :sub
+        sub_patch = build :sub, name: 'other'
+        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
-        original_sub.reload
-        assert_equal sub.name, original_sub.name
+        existing_sub.reload
+        assert_equal sub_patch.name, existing_sub.name
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the sub' do
-        original_sub = create :sub
-        sub = build :sub, name: ''
-        sub_params = { name: sub.name }
-        update_request = { params: { name: original_sub.to_param, sub: sub_params } }
-        put :update, update_request
+        existing_sub = create :sub
+        sub_patch = build :sub, name: ''
+        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        put :update, params: params
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
@@ -1098,10 +1078,11 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested sub' do
-      sub = create :sub
-      destroy_request = { params: { name: sub.to_param } }
+      existing_sub = create :sub
+      params = { name: existing_sub.to_param }
 
-      expect { delete :destroy, destroy_request }.to change { Sub.count }.by(-1)
+      expect { delete :destroy, params: params }.to change { Sub.count }.by(-1)
+
       expect(response).to have_http_status(:no_content)
     end
   end
@@ -1181,66 +1162,68 @@ require 'rails_helper'
 
 RSpec.describe PostsController, type: :routing do
   describe 'routing' do
-    let(:post) { create :post }
+    let(:existing_post) { create :post }
 
-    it 'routes to #index' do
-      route = "/users/#{post.user.name}/posts"
-      params = { user_name: post.user.name }
-      expect(get: route).to route_to('posts#index', params)
+    describe 'users concerns' do
+      let(:collection_route) { "/users/#{existing_post.user.name}/posts" }
+      let(:member_route) { "/users/#{existing_post.user.name}/posts/#{existing_post.id}" }
+      let(:collection_params) { { user_name: existing_post.user.name } }
+      let(:member_params) { { user_name: existing_post.user.name, id: existing_post.to_param } }
 
-      route = "/subs/#{post.sub.name}/posts"
-      params = { sub_name: post.sub.name }
-      expect(get: route).to route_to('posts#index', params)
+      it 'routes to #index' do
+        expect(get: collection_route).to route_to('posts#index', collection_params)
+      end
+  
+      it 'routes to #show' do
+        expect(get: member_route).to route_to('posts#show', member_params)
+      end
+  
+      it 'routes to #create' do
+        expect(post: collection_route).to route_to('posts#create', collection_params)
+      end
+  
+      it 'routes to #update via PUT' do
+        expect(put: member_route).to route_to('posts#update', member_params)
+      end
+  
+      it 'routes to #update via PATCH' do
+        expect(patch: member_route).to route_to('posts#update', member_params)
+      end
+  
+      it 'routes to #destroy' do
+        expect(delete: member_route).to route_to('posts#destroy', member_params)
+      end
     end
 
-    it 'routes to #show' do
-      route = "/users/#{post.user.name}/posts/#{post.id}"
-      params = { user_name: post.user.name, id: post.to_param }
-      expect(get: route).to route_to('posts#show', params)
+    describe 'subs concerns' do
+      let(:collection_route) { "/subs/#{existing_post.sub.name}/posts" }
+      let(:member_route) { "/subs/#{existing_post.sub.name}/posts/#{existing_post.id}" }
+      let(:collection_params) { { sub_name: existing_post.sub.name } }
+      let(:member_params) { { sub_name: existing_post.sub.name, id: existing_post.to_param } }
 
-      route = "/subs/#{post.sub.name}/posts/#{post.id}"
-      params = { sub_name: post.sub.name, id: post.to_param }
-      expect(get: route).to route_to('posts#show', params)
-    end
-
-    it 'routes to #create' do
-      route = "/users/#{post.user.name}/posts"
-      params = { user_name: post.user.name }
-      expect(post: route).to route_to('posts#create', params)
-
-      route = "/subs/#{post.sub.name}/posts"
-      params = { sub_name: post.sub.name }
-      expect(post: route).to route_to('posts#create', params)
-    end
-
-    it 'routes to #update via PUT' do
-      route = "/users/#{post.user.name}/posts/#{post.id}"
-      params = { user_name: post.user.name, id: post.to_param }
-      expect(put: route).to route_to('posts#update', params)
-
-      route = "/subs/#{post.sub.name}/posts/#{post.id}"
-      params = { sub_name: post.sub.name, id: post.to_param }
-      expect(put: route).to route_to('posts#update', params)
-    end
-
-    it 'routes to #update via PATCH' do
-      route = "/users/#{post.user.name}/posts/#{post.id}"
-      params = { user_name: post.user.name, id: post.to_param }
-      expect(patch: route).to route_to('posts#update', params)
-
-      route = "/subs/#{post.sub.name}/posts/#{post.id}"
-      params = { sub_name: post.sub.name, id: post.to_param }
-      expect(patch: route).to route_to('posts#update', params)
-    end
-
-    it 'routes to #destroy' do
-      route = "/users/#{post.user.name}/posts/#{post.id}"
-      params = { user_name: post.user.name, id: post.to_param }
-      expect(delete: route).to route_to('posts#destroy', params)
-
-      route = "/subs/#{post.sub.name}/posts/#{post.id}"
-      params = { sub_name: post.sub.name, id: post.to_param }
-      expect(delete: route).to route_to('posts#destroy', params)
+      it 'routes to #index' do
+        expect(get: collection_route).to route_to('posts#index', collection_params)
+      end
+  
+      it 'routes to #show' do
+        expect(get: member_route).to route_to('posts#show', member_params)
+      end
+  
+      it 'routes to #create' do
+        expect(post: collection_route).to route_to('posts#create', collection_params)
+      end
+  
+      it 'routes to #update via PUT' do
+        expect(put: member_route).to route_to('posts#update', member_params)
+      end
+  
+      it 'routes to #update via PATCH' do
+        expect(patch: member_route).to route_to('posts#update', member_params)
+      end
+  
+      it 'routes to #destroy' do
+        expect(delete: member_route).to route_to('posts#destroy', member_params)
+      end
     end
   end
 end
