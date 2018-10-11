@@ -16,7 +16,7 @@ RSpec.describe UsersController, type: :routing do
     end
 
     it 'routes to #create' do
-      expect(post:collection_route).to route_to('users#create')
+      expect(post: collection_route).to route_to('users#create')
     end
 
     it 'routes to #update via PUT' do

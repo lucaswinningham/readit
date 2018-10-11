@@ -1,7 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :update, :destroy]
-  before_action :set_user, only: [:update, :destroy]
-  before_action :set_sub, only: [:update, :destroy]
+  before_action :set_post, only: %i[show update destroy]
 
   def index
     @posts = Post.all
@@ -14,16 +12,14 @@ class PostsController < ApplicationController
   end
 
   def create
-    create_params = post_params
-    byebug
-    create_params[:user_id] = User.find_by_name!(create_params.delete(:user_name))
-    create_params[:sub_id] = Sub.find_by_name!(create_params.delete(:sub_name))
-    @post = Post.new(create_params)
+    post = Post.new(post_params)
+    set_user && set_sub
+    post.assign_attributes user_id: @user.id, sub_id: @sub.id
 
-    if @post.save
-      render json: @post, status: :created, location: @post
+    if post.save
+      render json: post, status: :created
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: post.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,18 +42,14 @@ class PostsController < ApplicationController
   end
 
   def set_user
-    @user = User.find_by_name!(post_params[:user_name])
+    @user = User.find_by_name(params[:user_name]) || User.find(post_params[:user_id])
   end
 
   def set_sub
-    @sub = Sub.find_by_name!(post_params[:sub_name])
-  end
-
-  def set_post
-    @post = Post.find(params[:id])
+    @sub = Sub.find_by_name(params[:sub_name]) || Sub.find(post_params[:sub_id])
   end
 
   def post_params
-    params.require(:post).permit(:user_name, :sub_name, :title, :url, :body)
+    params.require(:post).permit(:user_id, :sub_id, :title, :url, :body)
   end
 end

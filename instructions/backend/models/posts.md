@@ -148,19 +148,19 @@ $ touch spec/support/factories.rb
 ```ruby
 FactoryBot.define do
   factory :user do
-    name { 'some_user' }
-    email { 'some_user@email.com' }
+    sequence(:name) { Faker::Internet.unique.username(3..20, %w[_ -]) }
+    sequence(:email) { Faker::Internet.unique.safe_email }
   end
 
   factory :sub do
-    name { 'funny' }
+    sequence(:name) { Faker::Internet.unique.username(3..21, ['']) }
   end
 
   factory :post do
     user
     sub
-    title { 'Lorem ipsum' }
-    url { 'https://www.github.com' }
+    title { Faker::Lorem.sentence }
+    url { Faker::Internet.unique.url }
   end
 end
 

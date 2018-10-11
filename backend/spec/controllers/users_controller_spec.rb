@@ -32,7 +32,6 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(user_url(User.last))
       end
     end
 

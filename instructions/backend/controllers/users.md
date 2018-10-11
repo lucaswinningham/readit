@@ -104,6 +104,8 @@ $ rubocop
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
+  let(:created_user) { create :user }
+
   describe 'GET #index' do
     it 'returns a success response' do
       get :index
@@ -115,8 +117,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      existing_user = create :user
-      params = { name: existing_user.to_param }
+      params = { name: created_user.to_param }
       get :show, params: params
 
       expect(response).to have_http_status(:ok)
@@ -134,7 +135,6 @@ RSpec.describe UsersController, type: :controller do
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(user_url(User.last))
       end
     end
 
@@ -153,25 +153,23 @@ RSpec.describe UsersController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       it 'returns a success response and updates the requested user' do
-        existing_user = create :user
         user_patch = build :user, name: 'other', email: 'other@email.com'
-        params = { name: existing_user.to_param, user: user_patch.as_json }
+        params = { name: created_user.to_param, user: user_patch.as_json }
         put :update, params: params
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
-        existing_user.reload
-        assert_equal user_patch.name, existing_user.name
-        assert_equal user_patch.email, existing_user.email
+        created_user.reload
+        assert_equal user_patch.name, created_user.name
+        assert_equal user_patch.email, created_user.email
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the user' do
-        existing_user = create :user
         user_patch = build :user, name: '', email: ''
-        params = { name: existing_user.to_param, user: user_patch.as_json }
+        params = { name: created_user.to_param, user: user_patch.as_json }
         put :update, params: params
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -182,8 +180,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested user' do
-      existing_user = create :user
-      params = { name: existing_user.to_param }
+      params = { name: created_user.to_param }
 
       expect { delete :destroy, params: params }.to change { User.count }.by(-1)
 
@@ -214,7 +211,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      render json: @user, status: :created
     else
       render json: @user.errors, status: :unprocessable_entity
     end

@@ -102,6 +102,8 @@ $ rubocop
 require 'rails_helper'
 
 RSpec.describe SubsController, type: :controller do
+  let(:created_sub) { create :sub }
+
   describe 'GET #index' do
     it 'returns a success response' do
       get :index
@@ -113,8 +115,7 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      existing_sub = create :sub
-      params = { name: existing_sub.to_param }
+      params = { name: created_sub.to_param }
       get :show, params: params
 
       expect(response).to have_http_status(:ok)
@@ -132,7 +133,6 @@ RSpec.describe SubsController, type: :controller do
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(sub_url(Sub.last))
       end
     end
 
@@ -151,24 +151,22 @@ RSpec.describe SubsController, type: :controller do
   describe 'PUT #update' do
     context 'with valid params' do
       it 'returns a success response and updates the requested sub' do
-        existing_sub = create :sub
         sub_patch = build :sub, name: 'other'
-        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        params = { name: created_sub.to_param, sub: sub_patch.as_json }
         put :update, params: params
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
 
-        existing_sub.reload
-        assert_equal sub_patch.name, existing_sub.name
+        created_sub.reload
+        assert_equal sub_patch.name, created_sub.name
       end
     end
 
     context 'with invalid params' do
       it 'renders a JSON response with errors for the sub' do
-        existing_sub = create :sub
         sub_patch = build :sub, name: ''
-        params = { name: existing_sub.to_param, sub: sub_patch.as_json }
+        params = { name: created_sub.to_param, sub: sub_patch.as_json }
         put :update, params: params
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -179,8 +177,7 @@ RSpec.describe SubsController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested sub' do
-      existing_sub = create :sub
-      params = { name: existing_sub.to_param }
+      params = { name: created_sub.to_param }
 
       expect { delete :destroy, params: params }.to change { Sub.count }.by(-1)
 
@@ -211,7 +208,7 @@ class SubsController < ApplicationController
     @sub = Sub.new(sub_params)
 
     if @sub.save
-      render json: @sub, status: :created, location: @sub
+      render json: @sub, status: :created
     else
       render json: @sub.errors, status: :unprocessable_entity
     end

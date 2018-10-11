@@ -32,7 +32,6 @@ RSpec.describe SubsController, type: :controller do
 
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
-        expect(response.location).to eq(sub_url(Sub.last))
       end
     end
 

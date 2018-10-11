@@ -15,7 +15,7 @@ class SubsController < ApplicationController
     @sub = Sub.new(sub_params)
 
     if @sub.save
-      render json: @sub, status: :created, location: @sub
+      render json: @sub, status: :created
     else
       render json: @sub.errors, status: :unprocessable_entity
     end
