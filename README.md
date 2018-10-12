@@ -910,7 +910,7 @@ $ curl -X GET http://localhost:3000/users | jq
 $ curl -X GET http://localhost:3000/users/reddituser | jq
 $ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/reddituser -d '{"user":{"name":"otheruser"}}' | jq
 $ curl -X GET http://localhost:3000/users/otheruser | jq
-$ curl -X http://localhost:3000/users/otheruser | jq
+$ curl -X DELETE http://localhost:3000/users/otheruser | jq
 $ curl -X GET http://localhost:3000/users/otheruser | jq
 ```
 
