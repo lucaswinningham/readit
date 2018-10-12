@@ -1544,7 +1544,8 @@ $ rails c
 > 4.times { FactoryBot.create :post }
 > user = FactoryBot.create :user, name: 'reddituser'
 > sub = FactoryBot.create :sub, name: 'redditsub'
-> FactoryBot.create :post, user_id: user.id, sub_id: sub.id
+> post = FactoryBot.create :post, user_id: user.id, sub_id: sub.id
+> post.id # remember this, mine was 5
 > quit
 $ rails s
 ```
