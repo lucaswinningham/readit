@@ -910,7 +910,7 @@ $ curl -X GET http://localhost:3000/users | jq
 $ curl -X GET http://localhost:3000/users/reddituser | jq
 $ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/reddituser -d '{"user":{"name":"otheruser"}}' | jq
 $ curl -X GET http://localhost:3000/users/otheruser | jq
-$ curl -X DELETE -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/otheruser | jq
+$ curl -X http://localhost:3000/users/otheruser | jq
 $ curl -X GET http://localhost:3000/users/otheruser | jq
 ```
 
@@ -1158,6 +1158,26 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+```
+$ rails c
+> require_relative 'spec/support/factories'
+> 4.times { FactoryBot.create :sub }
+> FactoryBot.create :sub, name: 'redditsub'
+> quit
+$ rails s
+```
+
+in another terminal
+
+```bash
+$ curl -X GET http://localhost:3000/subs | jq
+$ curl -X GET http://localhost:3000/subs/redditsub | jq
+$ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http://localhost:3000/subs/redditsub -d '{"sub":{"name":"othersub"}}' | jq
+$ curl -X GET http://localhost:3000/subs/othersub | jq
+$ curl -X DELETE http://localhost:3000/subs/othersub | jq
+$ curl -X GET http://localhost:3000/subs/othersub | jq
 ```
 
 #### Posts
