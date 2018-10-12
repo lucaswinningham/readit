@@ -1,15 +1,25 @@
 
-[setup](setup/instructions.md)
+[Setup](setup/instructions.md)
 
-[backend](backend/instructions.md)
-  [models](backend/models/instructions.md)
-    [users](backend/models/users/instructions.md)
-    [subs](backend/models/subs/instructions.md)
-    [posts](backend/models/posts/instructions.md)
-  [controllers](backend/controllers/instructions.md)
-    [users](backend/controllers/users/instructions.md)
-    [subs](backend/controllers/subs/instructions.md)
-    [posts](backend/controllers/posts/instructions.md)
+
+[Backend](backend/instructions.md)
+
+  [Models](backend/models/instructions.md)
+
+    [Users](backend/models/users/instructions.md)
+
+    [Subs](backend/models/subs/instructions.md)
+
+    [Posts](backend/models/posts/instructions.md)
+
+  [Controllers](backend/controllers/instructions.md)
+
+    [Users](backend/controllers/users/instructions.md)
+
+    [Subs](backend/controllers/subs/instructions.md)
+
+    [Posts](backend/controllers/posts/instructions.md)
+
 
 # Reset
 
