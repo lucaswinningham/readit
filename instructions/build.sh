@@ -1,19 +1,18 @@
 #! /bin/bash
 
 echo '' > instructions.md
-echo '' > links.md
 
 echo '* [Setup](setup/instructions.md)' >> instructions.md
 
-echo '* [Backend](backend/instructions.md)' >> instructions.md
-echo '  * [Models](backend/models/instructions.md)' >> instructions.md
-echo '    * [Users](backend/models/users/instructions.md)' >> instructions.md
-echo '    * [Subs](backend/models/subs/instructions.md)' >> instructions.md
-echo '    * [Posts](backend/models/posts/instructions.md)' >> instructions.md
-echo '  * [Controllers](backend/controllers/instructions.md)' >> instructions.md
-echo '    * [Users](backend/controllers/users/instructions.md)' >> instructions.md
-echo '    * [Subs](backend/controllers/subs/instructions.md)' >> instructions.md
-echo '    * [Posts](backend/controllers/posts/instructions.md)' >> instructions.md
+echo '* [Backend](#backend)' >> instructions.md
+echo '  * [Models](#backend-models)' >> instructions.md
+echo '    * [Users](#backend-user-model)' >> instructions.md
+echo '    * [Subs](#backend-sub-model)' >> instructions.md
+echo '    * [Posts](#backend-post-model)' >> instructions.md
+echo '  * [Controllers](#backend-controllers)' >> instructions.md
+echo '    * [Users](#backend-users-controller)' >> instructions.md
+echo '    * [Subs](#backend-subs-controller)' >> instructions.md
+echo '    * [Posts](#backend-posts-controller)' >> instructions.md
 
 # echo '[frontend](frontend/instructions.md)' >> instructions.md
 # echo '' >> instructions.md
@@ -21,13 +20,13 @@ echo '    * [Posts](backend/controllers/posts/instructions.md)' >> instructions.
 # echo '[auth](auth/instructions.md)' >> instructions.md
 # echo '' >> instructions.md
 
-cd setup/ && ./build.sh && cd ..
-cd backend/ && ./build.sh && cd ..
+cd setup/ && ./setup_build.sh && cd ..
+cd backend/ && ./backend_build.sh && cd ..
 # cd frontend/ && ./build.sh && cd ..
 # cd auth/ && ./build.sh && cd ..
 
-cat setup/instructions.md >> instructions.md
-cat backend/instructions.md >> instructions.md
+cat setup/setup_instructions.md >> instructions.md
+cat backend/backend_instructions.md >> instructions.md
 # cat frontend/instructions.md >> instructions.md
 # cat auth/instructions.md >> instructions.md
 

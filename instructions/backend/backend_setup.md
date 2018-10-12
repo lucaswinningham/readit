@@ -1,7 +1,5 @@
 # Backend
 
-## Setup
-
 ```bash
 $ rails new backend --api --database=postgresql --skip-test
 $ cd backend/

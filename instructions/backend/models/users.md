@@ -1,4 +1,4 @@
-#### Users
+#### Backend User Model
 
 ```bash
 $ rails g model user name:string email:string
