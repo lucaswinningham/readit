@@ -32,4 +32,6 @@ cat backend/controllers/posts.md >> ../README.md
 # cat backend/controllers/assignments.md >> ../README.md
 # cat backend/controllers/moderations.md >> ../README.md
 
+cat auth/setup.md >> ../README.md
+
 # cat frontend/setup.md >> ../README.md

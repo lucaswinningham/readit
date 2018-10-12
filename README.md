@@ -1561,3 +1561,10 @@ $ curl -X DELETE http://localhost:3000/users/reddituser/posts/5 | jq
 $ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
 ```
 
+# Auth
+
+## Setup
+
+```bash
+
+```
