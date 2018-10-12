@@ -295,9 +295,11 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[show update destroy]
 
   def index
-    @posts = Post.all
+    user = User.find_by_name params[:user_name]
+    sub = Sub.find_by_name params[:sub_name]
+    posts = (user || sub).posts
 
-    render json: @posts
+    render json: posts
   end
 
   def show
@@ -352,5 +354,27 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+```
+$ rails c
+> require_relative 'spec/support/factories'
+> 4.times { FactoryBot.create :post }
+> user = FactoryBot.create :user, name: 'reddituser'
+> sub = FactoryBot.create :sub, name: 'redditsub'
+> FactoryBot.create :post, user_id: user.id, sub_id: sub.id
+> quit
+$ rails s
+```
+
+in another terminal
+
+```bash
+$ curl -X GET http://localhost:3000/users/reddituser/posts | jq
+$ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
+$ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/reddituser/posts/5 -d '{"post":{"title":"other title"}}' | jq
+$ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
+$ curl -X DELETE http://localhost:3000/users/reddituser/posts/5 | jq
+$ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
 ```
 

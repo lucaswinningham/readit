@@ -2,9 +2,11 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[show update destroy]
 
   def index
-    @posts = Post.all
+    user = User.find_by_name params[:user_name]
+    sub = Sub.find_by_name params[:sub_name]
+    posts = (user || sub).posts
 
-    render json: @posts
+    render json: posts
   end
 
   def show
