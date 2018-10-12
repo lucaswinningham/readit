@@ -1,4 +1,4 @@
-#### Users
+#### Backend Users Controller
 
 ```bash
 $ rails g scaffold_controller user

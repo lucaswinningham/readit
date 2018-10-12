@@ -2,7 +2,7 @@
 
 echo '' > instructions.md
 
-echo '* [Setup](setup/instructions.md)' >> instructions.md
+echo '* [Setup](#setup)' >> instructions.md
 
 echo '* [Backend](#backend)' >> instructions.md
 echo '  * [Models](#backend-models)' >> instructions.md

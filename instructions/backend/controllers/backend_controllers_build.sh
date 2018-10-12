@@ -1,9 +1,9 @@
 #! /bin/bash
 
-echo '' > instructions.md
+echo '' > backend_controllers_instructions.md
 
-cat setup.md >> instructions.md
+cat backend_controllers_setup.md >> backend_controllers_instructions.md
 
-cat users/instructions.md > instructions.md
-cat subs/instructions.md >> instructions.md
-cat posts/instructions.md >> instructions.md
+for controller in users subs posts; do
+  cat ${controller}.md >> backend_controllers_instructions.md
+done

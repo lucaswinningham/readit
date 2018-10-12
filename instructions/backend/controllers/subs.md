@@ -1,4 +1,4 @@
-#### Subs
+#### Backend Subs Controller
 
 ```bash
 $ rails g scaffold_controller sub

@@ -1,4 +1,4 @@
-#### Posts
+#### Backend Posts Controller
 
 ```bash
 $ rails g scaffold_controller post
