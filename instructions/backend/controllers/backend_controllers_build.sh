@@ -1,9 +1,9 @@
 #! /bin/bash
 
-echo '' > backend_controllers_instructions.md
-
-cat backend_controllers_setup.md >> backend_controllers_instructions.md
+instructions=$(< backend_controllers_setup.md)
 
 for controller in users subs posts; do
-  cat ${controller}.md >> backend_controllers_instructions.md
+  instructions=${instructions}$(< ${controller}.md)
 done
+
+echo "$instructions"

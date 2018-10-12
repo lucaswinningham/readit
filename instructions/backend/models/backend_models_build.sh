@@ -1,9 +1,9 @@
 #! /bin/bash
 
-echo '' > backend_models_instructions.md
-
-cat backend_models_setup.md >> backend_models_instructions.md
+instructions=$(< backend_models_setup.md)
 
 for model in users subs posts; do
-  cat ${model}.md >> backend_models_instructions.md
+  instructions=${instructions}$(< ${model}.md)
 done
+
+echo "$instructions"

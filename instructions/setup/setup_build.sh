@@ -1,7 +1,7 @@
 #! /bin/bash
 
-echo '' > setup_instructions.md
+for type in reset installs setup; do
+  instructions=${instructions}$(< ${type}.md)
+done
 
-cat reset.md >> setup_instructions.md
-cat installs.md >> setup_instructions.md
-cat setup.md >> setup_instructions.md
+echo "$instructions"

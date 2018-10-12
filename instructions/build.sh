@@ -14,19 +14,29 @@ echo '    * [Users](#backend-users-controller)' >> instructions.md
 echo '    * [Subs](#backend-subs-controller)' >> instructions.md
 echo '    * [Posts](#backend-posts-controller)' >> instructions.md
 
+
+for topic in setup backend; do
+  cd ${topic}/
+  instructions=${instructions}$(./${topic}_build.sh)
+  cd ..
+done
+
+echo "$instructions" >> instructions.md
+
+
 # echo '[frontend](frontend/instructions.md)' >> instructions.md
 # echo '' >> instructions.md
 
 # echo '[auth](auth/instructions.md)' >> instructions.md
 # echo '' >> instructions.md
 
-cd setup/ && ./setup_build.sh && cd ..
-cd backend/ && ./backend_build.sh && cd ..
+# cd setup/ && ./setup_build.sh && cd ..
+# cd backend/ && ./backend_build.sh && cd ..
 # cd frontend/ && ./build.sh && cd ..
 # cd auth/ && ./build.sh && cd ..
 
-cat setup/setup_instructions.md >> instructions.md
-cat backend/backend_instructions.md >> instructions.md
+# cat setup/setup_instructions.md >> instructions.md
+# cat backend/backend_instructions.md >> instructions.md
 # cat frontend/instructions.md >> instructions.md
 # cat auth/instructions.md >> instructions.md
 
