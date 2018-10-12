@@ -3,17 +3,17 @@
 echo '' > instructions.md
 echo '' > links.md
 
-echo '# [Setup](setup/instructions.md)<br/>' >> instructions.md
+echo '* [Setup](setup/instructions.md)' >> instructions.md
 
-echo '# [Backend](backend/instructions.md)<br/>' >> instructions.md
-echo '## [Models](backend/models/instructions.md)<br/>' >> instructions.md
-echo '### ;[Users](backend/models/users/instructions.md)<br/>' >> instructions.md
-echo '### ;[Subs](backend/models/subs/instructions.md)<br/>' >> instructions.md
-echo '### ;[Posts](backend/models/posts/instructions.md)<br/>' >> instructions.md
-echo '## [Controllers](backend/controllers/instructions.md)<br/>' >> instructions.md
-echo '### ;[Users](backend/controllers/users/instructions.md)<br/>' >> instructions.md
-echo '### ;[Subs](backend/controllers/subs/instructions.md)<br/>' >> instructions.md
-echo '### ;[Posts](backend/controllers/posts/instructions.md)<br/>' >> instructions.md
+echo '* [Backend](backend/instructions.md)' >> instructions.md
+echo '  * [Models](backend/models/instructions.md)' >> instructions.md
+echo '    * [Users](backend/models/users/instructions.md)' >> instructions.md
+echo '    * [Subs](backend/models/subs/instructions.md)' >> instructions.md
+echo '    * [Posts](backend/models/posts/instructions.md)' >> instructions.md
+echo '  * [Controllers](backend/controllers/instructions.md)' >> instructions.md
+echo '    * [Users](backend/controllers/users/instructions.md)' >> instructions.md
+echo '    * [Subs](backend/controllers/subs/instructions.md)' >> instructions.md
+echo '    * [Posts](backend/controllers/posts/instructions.md)' >> instructions.md
 
 # echo '[frontend](frontend/instructions.md)' >> instructions.md
 # echo '' >> instructions.md

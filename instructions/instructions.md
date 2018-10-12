@@ -1,14 +1,14 @@
 
-# [Setup](setup/instructions.md)<br/>
-# [Backend](backend/instructions.md)<br/>
-## [Models](backend/models/instructions.md)<br/>
-### ;[Users](backend/models/users/instructions.md)<br/>
-### ;[Subs](backend/models/subs/instructions.md)<br/>
-### ;[Posts](backend/models/posts/instructions.md)<br/>
-## [Controllers](backend/controllers/instructions.md)<br/>
-### ;[Users](backend/controllers/users/instructions.md)<br/>
-### ;[Subs](backend/controllers/subs/instructions.md)<br/>
-### ;[Posts](backend/controllers/posts/instructions.md)<br/>
+* [Setup](setup/instructions.md)
+* [Backend](backend/instructions.md)
+  * [Models](backend/models/instructions.md)
+    * [Users](backend/models/users/instructions.md)
+    * [Subs](backend/models/subs/instructions.md)
+    * [Posts](backend/models/posts/instructions.md)
+  * [Controllers](backend/controllers/instructions.md)
+    * [Users](backend/controllers/users/instructions.md)
+    * [Subs](backend/controllers/subs/instructions.md)
+    * [Posts](backend/controllers/posts/instructions.md)
 # Reset
 
 ```bash
