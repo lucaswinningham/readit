@@ -1,26 +1,14 @@
 
-[Setup](setup/instructions.md)
-
-
-[Backend](backend/instructions.md)
-
-&nbsp;&nbsp;[Models](backend/models/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Users](backend/models/users/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Subs](backend/models/subs/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Posts](backend/models/posts/instructions.md)
-
-&nbsp;&nbsp;[Controllers](backend/controllers/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Users](backend/controllers/users/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Subs](backend/controllers/subs/instructions.md)
-
-&nbsp;&nbsp;&nbsp;&nbsp;[Posts](backend/controllers/posts/instructions.md)
-
-
+# [Setup](setup/instructions.md)<br/>
+# [Backend](backend/instructions.md)<br/>
+## [Models](backend/models/instructions.md)<br/>
+### ;[Users](backend/models/users/instructions.md)<br/>
+### ;[Subs](backend/models/subs/instructions.md)<br/>
+### ;[Posts](backend/models/posts/instructions.md)<br/>
+## [Controllers](backend/controllers/instructions.md)<br/>
+### ;[Users](backend/controllers/users/instructions.md)<br/>
+### ;[Subs](backend/controllers/subs/instructions.md)<br/>
+### ;[Posts](backend/controllers/posts/instructions.md)<br/>
 # Reset
 
 ```bash
