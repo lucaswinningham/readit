@@ -10,28 +10,28 @@ echo '' >> instructions.md
 echo '[Backend](backend/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '  [Models](backend/models/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;[Models](backend/models/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Users](backend/models/users/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Users](backend/models/users/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Subs](backend/models/subs/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Subs](backend/models/subs/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Posts](backend/models/posts/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Posts](backend/models/posts/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '  [Controllers](backend/controllers/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;[Controllers](backend/controllers/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Users](backend/controllers/users/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Users](backend/controllers/users/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Subs](backend/controllers/subs/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Subs](backend/controllers/subs/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 
-echo '    [Posts](backend/controllers/posts/instructions.md)' >> instructions.md
+echo '&nbsp;&nbsp;&nbsp;&nbsp;[Posts](backend/controllers/posts/instructions.md)' >> instructions.md
 echo '' >> instructions.md
 echo '' >> instructions.md
 
