@@ -472,7 +472,7 @@ group :development, :test do
   ...
 
   # Use Factory Bot for test fixtures
-  gem 'factory_bot'
+  gem 'factory_bot_rails'
 end
 
 ...
@@ -892,6 +892,26 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+```
+$ rails c
+> require_relative 'spec/support/factories'
+> 4.times { FactoryBot.create :user }
+> FactoryBot.create :user, name: 'reddituser'
+> quit
+$ rails s
+```
+
+in another terminal
+
+```bash
+$ curl -X GET http://localhost:3000/users | jq
+$ curl -X GET http://localhost:3000/users/reddituser | jq
+$ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/reddituser -d '{"user":{"name":"otheruser"}}' | jq
+$ curl -X GET http://localhost:3000/users/otheruser | jq
+$ curl -X DELETE -H Content-Type:application/json -H Accept:application/json http://localhost:3000/users/otheruser | jq
+$ curl -X GET http://localhost:3000/users/otheruser | jq
 ```
 
 #### Subs
