@@ -1,41 +1,4 @@
 
-[setup](setup/instructions.md)
-
-[backend](backend/instructions.md)
-  [models](backend/models/instructions.md)
-    [users](backend/models/users/instructions.md)
-    [subs](backend/models/subs/instructions.md)
-    [posts](backend/models/posts/instructions.md)
-  [controllers](backend/controllers/instructions.md)
-    [users](backend/controllers/users/instructions.md)
-    [subs](backend/controllers/subs/instructions.md)
-    [posts](backend/controllers/posts/instructions.md)
-
-# Reset
-
-```bash
-$ rm -r reddit-clone
-$ dropdb redditdevsdb
-$ dropdb reddittestdb
-$ dropuser redditapp
-```
-
-# Installs
-
-TODO: FILL OUT
-
-```bash
-brew install jq
-```
-
-# Setup
-
-```bash
-$ mkdir reddit-clone
-$ cd reddit-clone
-```
-
-
 # Backend
 
 ## Setup
