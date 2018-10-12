@@ -115,7 +115,7 @@ group :development, :test do
   ...
 
   # Use Factory Bot for test fixtures
-  gem 'factory_bot'
+  gem 'factory_bot_rails'
 end
 
 ...

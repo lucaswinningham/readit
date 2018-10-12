@@ -64,7 +64,7 @@ group :development, :test do
   gem 'shoulda-matchers'
 
   # Use Factory Bot for test fixtures
-  gem 'factory_bot'
+  gem 'factory_bot_rails'
 end
 
 # Use figaro for environment variables
