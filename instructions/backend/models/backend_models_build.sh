@@ -3,7 +3,7 @@
 instructions=$(< backend_models_setup.md)
 
 for model in users subs posts; do
-  instructions=${instructions}$(< ${model}.md)
+  instructions="${instructions}$(< ${model}.md)\n\n"
 done
 
-echo "$instructions"
+echo -e "$instructions"

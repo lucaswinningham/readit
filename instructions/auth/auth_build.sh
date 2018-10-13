@@ -1,5 +1,5 @@
 #! /bin/bash
 
-instructions=$(< auth_setup.md)
+instructions="$(< auth_setup.md)\n\n"
 
-echo "$instructions"
+echo -e "$instructions"

@@ -17,18 +17,24 @@ $ rm -r reddit-clone
 $ dropdb redditdevsdb
 $ dropdb reddittestdb
 $ dropuser redditapp
-```# Installs
+```
+
+# Installs
 
 TODO: FILL OUT
 
 ```bash
 brew install jq
-```# Setup
+```
+
+# Setup
 
 ```bash
 $ mkdir reddit-clone
 $ cd reddit-clone
-```# Backend
+```
+
+# Backend
 
 ```bash
 $ rails new backend --api --database=postgresql --skip-test
@@ -258,7 +264,8 @@ end
 module Helpers
   module ValidationHelper
     def blank_values
-      ['', ' ', "\n", "\r", "\t", "\f"]
+      ['', ' ', "
+", "", "	", ""]
     end
   end
 end
@@ -307,7 +314,9 @@ end
 ```bash
 $ rspec
 $ rubocop
-```#### Backend Sub Model
+```
+
+#### Backend Sub Model
 
 ```bash
 $ rails g model sub name:string
@@ -351,7 +360,9 @@ end
 ```bash
 $ rspec
 $ rubocop
-```#### Backend Post Model
+```
+
+#### Backend Post Model
 
 ```bash
 $ rails g model post user:belongs_to sub:belongs_to title:text url:string body:text active:boolean
@@ -636,7 +647,9 @@ end
 ```bash
 $ rspec
 $ rubocop
-```## Backend Controllers#### Backend Users Controller
+```
+
+## Backend Controllers#### Backend Users Controller
 
 ```bash
 $ rails g scaffold_controller user
@@ -903,7 +916,9 @@ $ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http
 $ curl -X GET http://localhost:3000/users/otheruser | jq
 $ curl -X DELETE http://localhost:3000/users/otheruser | jq
 $ curl -X GET http://localhost:3000/users/otheruser | jq
-```#### Backend Subs Controller
+```
+
+#### Backend Subs Controller
 
 ```bash
 $ rails g scaffold_controller sub
@@ -1167,7 +1182,9 @@ $ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http
 $ curl -X GET http://localhost:3000/subs/othersub | jq
 $ curl -X DELETE http://localhost:3000/subs/othersub | jq
 $ curl -X GET http://localhost:3000/subs/othersub | jq
-```#### Backend Posts Controller
+```
+
+#### Backend Posts Controller
 
 ```bash
 $ rails g scaffold_controller post
@@ -1546,7 +1563,9 @@ $ curl -X PATCH -H Content-Type:application/json -H Accept:application/json http
 $ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
 $ curl -X DELETE http://localhost:3000/users/reddituser/posts/5 | jq
 $ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
-```# Auth
+```
+
+# Auth
 
 ###### backend/Gemfile
 
@@ -1732,3 +1751,5 @@ class User < ApplicationRecord
 end
 
 ```
+
+

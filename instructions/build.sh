@@ -19,11 +19,11 @@ echo '* [Auth](#auth)' >> instructions.md
 
 for topic in setup backend auth; do
   cd ${topic}/
-  instructions=${instructions}$(./${topic}_build.sh)
+  instructions="${instructions}$(./${topic}_build.sh)\n\n"
   cd ..
 done
 
-echo "$instructions" >> instructions.md
+echo -e "$instructions" >> instructions.md
 
 
 # echo '[frontend](frontend/instructions.md)' >> instructions.md
