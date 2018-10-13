@@ -14,8 +14,10 @@ echo '    * [Users](#backend-users-controller)' >> instructions.md
 echo '    * [Subs](#backend-subs-controller)' >> instructions.md
 echo '    * [Posts](#backend-posts-controller)' >> instructions.md
 
+echo '* [Auth](#auth)' >> instructions.md
 
-for topic in setup backend; do
+
+for topic in setup backend auth; do
   cd ${topic}/
   instructions=${instructions}$(./${topic}_build.sh)
   cd ..

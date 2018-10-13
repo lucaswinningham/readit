@@ -1,7 +1,0 @@
-# Auth
-
-## Setup
-
-```bash
-
-```

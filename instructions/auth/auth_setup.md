@@ -1,7 +1,5 @@
 # Auth
 
-## Setup
-
 ###### backend/Gemfile
 
 ```ruby
