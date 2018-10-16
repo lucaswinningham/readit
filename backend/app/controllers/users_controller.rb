@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!, only: %i[update destroy]
   before_action :set_user, only: %i[show update destroy]
 
   def index
@@ -8,16 +9,24 @@ class UsersController < ApplicationController
   end
 
   def show
+    # render json: UserShowSerializer.new(@user)
     render json: @user
   end
 
   def create
-    @user = User.new(user_params)
+    user_params = create_params
+    decoded = JwtService.decode(token: user_params.delete(:token))
+    client_hashed_password = decoded['sub']
+    user_params[:password] = client_hashed_password
+    user = User.new(user_params)
+    user.build_salt(salt_string: BCrypt::Password.new(client_hashed_password).salt)
 
-    if @user.save
-      render json: @user, status: :created
+    if user.save
+      session = user.make_session
+      # render json: SessionCreateSerializer.new(session), status: :created
+      render json: session, status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
@@ -30,7 +39,8 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
+    # @user.destroy
+    current_user.destroy
   end
 
   private
@@ -39,7 +49,8 @@ class UsersController < ApplicationController
     @user = User.find_by_name!(params[:name])
   end
 
-  def user_params
-    params.require(:user).permit(:name, :email)
+  def create_params
+    # params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:name, :email, :token)
   end
 end

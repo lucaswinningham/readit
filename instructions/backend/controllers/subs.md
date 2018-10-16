@@ -1,8 +1,5 @@
-#### Backend Subs Controller
-
 ```bash
 $ rails g scaffold_controller sub
-$ rm spec/requests/subs_spec.rb
 ```
 
 ###### spec/routing/subs_routing_spec.rb

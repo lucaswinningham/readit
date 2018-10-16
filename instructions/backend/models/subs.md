@@ -1,5 +1,3 @@
-#### Backend Sub Model
-
 ```bash
 $ rails g model sub name:string
 $ rails db:migrate

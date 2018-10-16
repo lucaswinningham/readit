@@ -1,4 +1,4 @@
-#### Backend User Model
+<!-- make sure factory bot is installed because it automatically creates a users factory file -->
 
 ```bash
 $ rails g model user name:string email:string

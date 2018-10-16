@@ -1,8 +1,5 @@
-#### Backend Users Controller
-
 ```bash
 $ rails g scaffold_controller user
-$ rm spec/requests/users_spec.rb
 ```
 
 ###### spec/routing/users_routing_spec.rb

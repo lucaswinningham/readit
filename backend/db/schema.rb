@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008023819) do
+ActiveRecord::Schema.define(version: 20181013042436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "nonces", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "nonce_string"
+    t.datetime "expiration_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_nonces_on_user_id"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.bigint "user_id"
@@ -28,6 +37,14 @@ ActiveRecord::Schema.define(version: 20181008023819) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
+  create_table "salts", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "salt_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_salts_on_user_id"
+  end
+
   create_table "subs", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -39,8 +56,11 @@ ActiveRecord::Schema.define(version: 20181008023819) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
   end
 
+  add_foreign_key "nonces", "users"
   add_foreign_key "posts", "subs"
   add_foreign_key "posts", "users"
+  add_foreign_key "salts", "users"
 end

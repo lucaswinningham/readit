@@ -1,8 +1,5 @@
-#### Backend Posts Controller
-
 ```bash
 $ rails g scaffold_controller post
-$ rm spec/requests/posts_spec.rb
 ```
 
 <!-- copy same format (route, params vars) to users and subs and so forth -->

@@ -69,3 +69,9 @@ end
 
 # Use figaro for environment variables
 gem 'figaro'
+
+# Use BCrypt for hashing
+gem 'bcrypt'
+
+# Use JWT for auth
+gem 'jwt'

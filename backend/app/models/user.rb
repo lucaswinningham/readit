@@ -10,6 +10,26 @@ class User < ActiveRecord::Base
     name
   end
 
+  # password validations
+
+  has_one :salt, dependent: :destroy
+
+  has_one :nonce, dependent: :destroy
+
+  def authenticate(unencrypted_password)
+    BCrypt::Password.new(password_digest).is_password?(unencrypted_password) && self
+  end
+
+  def password=(unencrypted_password)
+    self.password_digest = BCrypt::Password.create(unencrypted_password)
+  end
+
+  def make_session
+    payload = { sub: name }
+    token = JwtService.encode(payload: payload)
+    OpenStruct.new({ id: nil, user_name: name, token: token })
+  end
+
   private
 
   def deactivate_posts

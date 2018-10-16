@@ -6,7 +6,7 @@ class Post < ApplicationRecord
 
   validates :body, length: { maximum: 10_000 }
 
-  validates :url, uniqueness: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
+  validates :url, uniqueness: true, format: { with: URI::regexp }
 
   before_create :activate
 

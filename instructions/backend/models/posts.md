@@ -1,5 +1,3 @@
-#### Backend Post Model
-
 ```bash
 $ rails g model post user:belongs_to sub:belongs_to title:text url:string body:text active:boolean
 $ rails db:migrate
@@ -72,7 +70,7 @@ class Post < ApplicationRecord
 
   validates :body, length: { maximum: 10_000 }
 
-  validates :url, uniqueness: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
+  validates :url, uniqueness: true, format: { with: URI::regexp }
 end
 
 ```
@@ -179,103 +177,6 @@ class Post < ApplicationRecord
   def activate
     self.active = true
   end
-end
-
-```
-
-```bash
-$ rspec
-$ rubocop
-```
-
-##### User Post Association
-
-###### spec/models/user_spec.rb
-
-```ruby
-require 'rails_helper'
-
-RSpec.describe User, type: :model do
-  ...
-
-  describe 'posts' do
-    it { should have_many(:posts) }
-
-    context 'on destroy' do
-      it 'should deactivate associated posts' do
-        post = create :post
-        expect(post.active).to be true
-        post.user.destroy
-        post.reload
-        expect(post.active).to be false
-      end
-
-      it 'should nullify self on associated posts' do
-        post = create :post
-        post.user.destroy
-        post.reload
-        expect(post.user_id).to be_nil
-      end
-    end
-  end
-end
-
-```
-
-###### app/models/user.rb
-
-```ruby
-class User < ActiveRecord::Base
-  ...
-
-  has_many :posts, dependent: :nullify
-  before_destroy :deactivate_posts, prepend: true
-
-  private
-
-  def deactivate_posts
-    posts.update_all(active: false)
-  end
-end
-
-```
-
-```bash
-$ rspec
-$ rubocop
-```
-
-##### Sub Post Association
-
-###### spec/models/sub_spec.rb
-
-```ruby
-require 'rails_helper'
-
-RSpec.describe Sub, type: :model do
-  ...
-
-  describe 'posts' do
-    it { should have_many(:posts) }
-
-    context 'on destroy' do
-      it 'should destroy associated posts' do
-        post = create :post
-        expect { post.sub.destroy }.to change { Post.count }.by(-1)
-      end
-    end
-  end
-end
-
-```
-
-###### app/models/sub.rb
-
-```ruby
-class Sub < ApplicationRecord
-  ...
-
-  has_many :posts, dependent: :destroy
 end
 
 ```

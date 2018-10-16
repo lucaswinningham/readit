@@ -1,5 +1,3 @@
-# Reset
-
 ```bash
 $ rm -r reddit-clone
 $ dropdb redditdevsdb
