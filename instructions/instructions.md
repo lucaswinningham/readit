@@ -560,7 +560,7 @@ $ rspec
 $ rubocop
 ```
 
-#### Backend User Post Assocation
+#### Backend User Post Association
 
 ###### spec/models/user_spec.rb
 
@@ -617,7 +617,7 @@ $ rspec
 $ rubocop
 ```
 
-#### Backend Sub Post Assocation
+#### Backend Sub Post Association
 
 ###### spec/models/sub_spec.rb
 

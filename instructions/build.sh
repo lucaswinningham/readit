@@ -44,10 +44,10 @@ cat backend/models/subs.md >> instructions.md
 echo -e '### Backend Post Model\n' >> instructions.md
 cat backend/models/posts.md >> instructions.md
 
-echo -e '#### Backend User Post Assocation\n' >> instructions.md
+echo -e '#### Backend User Post Association\n' >> instructions.md
 cat backend/models/posts/user_association.md >> instructions.md
 
-echo -e '#### Backend Sub Post Assocation\n' >> instructions.md
+echo -e '#### Backend Sub Post Association\n' >> instructions.md
 cat backend/models/posts/sub_association.md >> instructions.md
 
 echo -e '## Backend Controllers\n' >> instructions.md
