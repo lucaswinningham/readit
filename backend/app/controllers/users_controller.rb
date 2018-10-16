@@ -2,15 +2,14 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, only: %i[update destroy]
   before_action :set_user, only: %i[show update destroy]
 
-  def index
-    @users = User.all
+  # def index
+  #   @users = User.all
 
-    render json: @users
-  end
+  #   render json: @users
+  # end
 
   def show
-    # render json: UserShowSerializer.new(@user)
-    render json: @user
+    render json: UserSerializer.new(@user)
   end
 
   def create
@@ -23,8 +22,7 @@ class UsersController < ApplicationController
 
     if user.save
       session = user.make_session
-      # render json: SessionCreateSerializer.new(session), status: :created
-      render json: session, status: :created
+      render json: SessionSerializer.new(session), status: :created
     else
       render json: user.errors, status: :unprocessable_entity
     end
@@ -32,14 +30,13 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      render json: @user
+      render json: UserPrivateSerializer.new(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    # @user.destroy
     current_user.destroy
   end
 
@@ -50,7 +47,6 @@ class UsersController < ApplicationController
   end
 
   def create_params
-    # params.require(:user).permit(:name, :email)
     params.require(:user).permit(:name, :email, :token)
   end
 end

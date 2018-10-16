@@ -7,8 +7,7 @@ class SaltsController < ApplicationController
       render json: @user.salt
     else
       salt = Salt.new(salt_string: Salt.generate_salt)
-      # render json: SaltShowSerializer.new(salt)
-      render json: salt
+      render json: SaltSerializer.new(salt)
     end
   end
 

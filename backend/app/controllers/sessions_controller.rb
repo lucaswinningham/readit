@@ -13,8 +13,7 @@ class SessionsController < ApplicationController
 
     @user.nonce.destroy
     session = @user.make_session
-    # render json: SessionCreateSerializer.new(session), status: :created
-    render json: session, status: :created
+    render json: SessionSerializer.new(session), status: :created
   end
 
   private

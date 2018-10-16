@@ -7,8 +7,7 @@ class NoncesController < ApplicationController
     nonce = @user.build_nonce(nonce_creation_attributes)
 
     if nonce.save
-      # render json: NonceCreateSerializer.new(nonce), status: :created
-      render json: nonce, status: :created
+      render json: NonceSerializer.new(nonce), status: :created
     else
       render json: nonce.errors, status: :unprocessable_entity
     end

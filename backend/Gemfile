@@ -70,6 +70,9 @@ end
 # Use figaro for environment variables
 gem 'figaro'
 
+# Use Netflix's gem for serialization
+gem 'fast_jsonapi'
+
 # Use BCrypt for hashing
 gem 'bcrypt'
 
