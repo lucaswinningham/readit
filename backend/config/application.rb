@@ -30,7 +30,9 @@ module Backend
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    #
     # Added
+    #
 
     config.generators do |g|
       g.test_framework :rspec, request_specs: false

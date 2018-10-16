@@ -63,7 +63,7 @@ group :development, :test do
   # Use shoulda-matchers for easy testing
   gem 'shoulda-matchers'
 
-  # Use Factory Bot for test fixtures
+  # Use Factory Bot as test fixtures
   gem 'factory_bot_rails'
 end
 

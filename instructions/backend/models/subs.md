@@ -42,3 +42,15 @@ $ rspec
 $ rubocop
 ```
 
+<!-- move to instructions/backend/models/posts.md -->
+###### spec/factories/subs.rb
+
+```ruby
+FactoryBot.define do
+  factory :sub do
+    sequence(:name) { Faker::Internet.unique.username(3..21, ['']) }
+  end
+end
+
+```
+

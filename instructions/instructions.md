@@ -200,16 +200,19 @@ $ rails db:create
 group :development, :test do
   ...
 
-  # Use Faker for seeding the database
+  # Use Factory Bot for model generation
+  gem 'factory_bot_rails'
+
+  # Use Faker for model attribute generation
   gem 'faker'
 
-  # Use guard for automatically running tests
+  # Use Guard for running tests
   gem 'guard-rspec'
 
-  # Use rspec for testing
+  # Use RSpec for testing
   gem 'rspec-rails'
 
-  # Use shoulda-matchers for easy testing
+  # Use Shoulda-Matchers for clear tests
   gem 'shoulda-matchers'
 end
 
@@ -252,6 +255,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   ...
 
+  config.include FactoryBot::Syntax::Methods
+
   config.include Helpers::ValidationHelper, type: :model
 end
 
@@ -277,8 +282,6 @@ end
 ## Backend Models
 
 ### Backend User Model
-
-<!-- make sure factory bot is installed because it automatically creates a users factory file -->
 
 ```bash
 $ rails g model user name:string email:string
@@ -322,6 +325,19 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+<!-- move to instructions/backend/models/posts.md -->
+###### spec/factories/users.rb
+
+```ruby
+FactoryBot.define do
+  factory :user do
+    sequence(:name) { Faker::Internet.unique.username(3..20, %w[_ -]) }
+    sequence(:email) { Faker::Internet.unique.safe_email }
+  end
+end
+
 ```
 
 ### Backend Sub Model
@@ -368,6 +384,18 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+<!-- move to instructions/backend/models/posts.md -->
+###### spec/factories/subs.rb
+
+```ruby
+FactoryBot.define do
+  factory :sub do
+    sequence(:name) { Faker::Internet.unique.username(3..21, ['']) }
+  end
+end
+
 ```
 
 ### Backend Post Model
@@ -474,60 +502,10 @@ end
 
 ```
 
-###### Gemfile
-
-```ruby
-...
-
-#
-# Added
-#
-
-group :development, :test do
-  ...
-
-  # Use Factory Bot for test fixtures
-  gem 'factory_bot_rails'
-end
-
-...
-```
-
-```bash
-$ bundle
-```
-
-###### spec/rails_helper.rb
-
-```ruby
-...
-
-RSpec.configure do |config|
-  ...
-
-  config.include FactoryBot::Syntax::Methods
-end
-
-...
-```
-
-```bash
-$ touch spec/support/factories.rb
-```
-
-###### spec/support/factories.rb
+###### spec/factories/posts.rb
 
 ```ruby
 FactoryBot.define do
-  factory :user do
-    sequence(:name) { Faker::Internet.unique.username(3..20, %w[_ -]) }
-    sequence(:email) { Faker::Internet.unique.safe_email }
-  end
-
-  factory :sub do
-    sequence(:name) { Faker::Internet.unique.username(3..21, ['']) }
-  end
-
   factory :post do
     user
     sub
@@ -659,6 +637,20 @@ $ rubocop
 
 ## Backend Controllers
 
+###### Gemfile
+
+```ruby
+...
+
+# Use Netflix's serializers
+gem 'fast_jsonapi'
+
+```
+
+```bash
+$ bundle
+```
+
 ###### config/application.rb
 
 ```ruby
@@ -675,22 +667,14 @@ module Backend
     config.generators do |g|
       g.test_framework :rspec, request_specs: false
     end
+
+    config.eager_load_paths << Rails.root.join('app/serializers')
   end
 end
 
 ```
 
 <!-- factory setup stuff -->
-
-###### Gemfile
-
-```ruby
-...
-
-# Use Netflix's serializers
-gem 'fast_jsonapi'
-
-```
 
 ### Backend Users Controller
 
@@ -1685,8 +1669,13 @@ module Backend
   class Application < Rails::Application
     ...
 
+    #
     # Added
+    #
 
+    ...
+
+    # config.eager_load_paths << Rails.root.join('app/serializers')
     ['app/serializers', 'lib'].each do |path|
       config.eager_load_paths << Rails.root.join(path)
     end

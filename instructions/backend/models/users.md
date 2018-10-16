@@ -1,5 +1,3 @@
-<!-- make sure factory bot is installed because it automatically creates a users factory file -->
-
 ```bash
 $ rails g model user name:string email:string
 $ rails db:migrate
@@ -42,5 +40,18 @@ end
 ```bash
 $ rspec
 $ rubocop
+```
+
+<!-- move to instructions/backend/models/posts.md -->
+###### spec/factories/users.rb
+
+```ruby
+FactoryBot.define do
+  factory :user do
+    sequence(:name) { Faker::Internet.unique.username(3..20, %w[_ -]) }
+    sequence(:email) { Faker::Internet.unique.safe_email }
+  end
+end
+
 ```
 

@@ -100,60 +100,10 @@ end
 
 ```
 
-###### Gemfile
-
-```ruby
-...
-
-#
-# Added
-#
-
-group :development, :test do
-  ...
-
-  # Use Factory Bot for test fixtures
-  gem 'factory_bot_rails'
-end
-
-...
-```
-
-```bash
-$ bundle
-```
-
-###### spec/rails_helper.rb
-
-```ruby
-...
-
-RSpec.configure do |config|
-  ...
-
-  config.include FactoryBot::Syntax::Methods
-end
-
-...
-```
-
-```bash
-$ touch spec/support/factories.rb
-```
-
-###### spec/support/factories.rb
+###### spec/factories/posts.rb
 
 ```ruby
 FactoryBot.define do
-  factory :user do
-    sequence(:name) { Faker::Internet.unique.username(3..20, %w[_ -]) }
-    sequence(:email) { Faker::Internet.unique.safe_email }
-  end
-
-  factory :sub do
-    sequence(:name) { Faker::Internet.unique.username(3..21, ['']) }
-  end
-
   factory :post do
     user
     sub

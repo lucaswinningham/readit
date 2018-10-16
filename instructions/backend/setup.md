@@ -159,16 +159,19 @@ $ rails db:create
 group :development, :test do
   ...
 
-  # Use Faker for seeding the database
+  # Use Factory Bot for model generation
+  gem 'factory_bot_rails'
+
+  # Use Faker for model attribute generation
   gem 'faker'
 
-  # Use guard for automatically running tests
+  # Use Guard for running tests
   gem 'guard-rspec'
 
-  # Use rspec for testing
+  # Use RSpec for testing
   gem 'rspec-rails'
 
-  # Use shoulda-matchers for easy testing
+  # Use Shoulda-Matchers for clear tests
   gem 'shoulda-matchers'
 end
 
@@ -210,6 +213,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   ...
+
+  config.include FactoryBot::Syntax::Methods
 
   config.include Helpers::ValidationHelper, type: :model
 end

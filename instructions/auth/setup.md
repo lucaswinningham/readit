@@ -76,8 +76,13 @@ module Backend
   class Application < Rails::Application
     ...
 
+    #
     # Added
+    #
 
+    ...
+
+    # config.eager_load_paths << Rails.root.join('app/serializers')
     ['app/serializers', 'lib'].each do |path|
       config.eager_load_paths << Rails.root.join(path)
     end
