@@ -94,6 +94,10 @@ end
 
 ```
 
+```bash
+$ rspec spec/routing
+```
+
 ###### spec/controllers/posts_controller_spec.rb
 
 ```ruby
@@ -285,6 +289,10 @@ end
 
 ```
 
+```bash
+$ rails g serializer Post title url body active
+```
+
 ###### app/controllers/posts_controller.rb
 
 ```ruby
@@ -296,20 +304,22 @@ class PostsController < ApplicationController
     sub = Sub.find_by_name params[:sub_name]
     posts = (user || sub).posts
 
-    render json: posts
+    render json: PostSerializer.new(posts)
   end
 
   def show
-    render json: @post
+    render json: PostSerializer.new(@post)
   end
 
   def create
     post = Post.new(post_params)
-    set_user && set_sub
-    post.assign_attributes user_id: @user.id, sub_id: @sub.id
+    user = User.find_by_name(params[:user_name]) || User.find(post_params[:user_id])
+    sub = Sub.find_by_name(params[:sub_name]) || Sub.find(post_params[:sub_id])
+
+    post.assign_attributes user_id: user.id, sub_id: sub.id
 
     if post.save
-      render json: post, status: :created
+      render json: PostSerializer.new(post), status: :created
     else
       render json: post.errors, status: :unprocessable_entity
     end
@@ -317,7 +327,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      render json: @post
+      render json: PostSerializer.new(@post)
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -331,14 +341,6 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find(params[:id])
-  end
-
-  def set_user
-    @user = User.find_by_name(params[:user_name]) || User.find(post_params[:user_id])
-  end
-
-  def set_sub
-    @sub = Sub.find_by_name(params[:sub_name]) || Sub.find(post_params[:sub_id])
   end
 
   def post_params

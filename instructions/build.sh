@@ -9,12 +9,14 @@ echo '  * [Models](#backend-models)' >> instructions.md
 echo '    * [Users](#backend-user-model)' >> instructions.md
 echo '    * [Subs](#backend-sub-model)' >> instructions.md
 echo '    * [Posts](#backend-post-model)' >> instructions.md
-echo '      * [User Association](#backend-user-post-association)' >> instructions.md
-echo '      * [Sub Association](#backend-sub-post-association)' >> instructions.md
+echo '      * [User Association](#backend-user-post-model-association)' >> instructions.md
+echo '      * [Sub Association](#backend-sub-post-model-association)' >> instructions.md
 echo '  * [Controllers](#backend-controllers)' >> instructions.md
 echo '    * [Users](#backend-users-controller)' >> instructions.md
 echo '    * [Subs](#backend-subs-controller)' >> instructions.md
 echo '    * [Posts](#backend-posts-controller)' >> instructions.md
+echo '      * [User Association](#backend-user-post-controller-association)' >> instructions.md
+echo '      * [Sub Association](#backend-sub-post-controller-association)' >> instructions.md
 
 echo '* [Auth](#auth)' >> instructions.md
 
@@ -44,10 +46,10 @@ cat backend/models/subs.md >> instructions.md
 echo -e '### Backend Post Model\n' >> instructions.md
 cat backend/models/posts.md >> instructions.md
 
-echo -e '#### Backend User Post Association\n' >> instructions.md
+echo -e '#### Backend User Post Model Association\n' >> instructions.md
 cat backend/models/posts/user_association.md >> instructions.md
 
-echo -e '#### Backend Sub Post Association\n' >> instructions.md
+echo -e '#### Backend Sub Post Model Association\n' >> instructions.md
 cat backend/models/posts/sub_association.md >> instructions.md
 
 echo -e '## Backend Controllers\n' >> instructions.md
@@ -61,6 +63,12 @@ cat backend/controllers/subs.md >> instructions.md
 
 echo -e '### Backend Posts Controller\n' >> instructions.md
 cat backend/controllers/posts.md >> instructions.md
+
+echo -e '#### Backend User Post Controller Association\n' >> instructions.md
+cat backend/controllers/posts/user_association.md >> instructions.md
+
+echo -e '#### Backend Sub Post Controller Association\n' >> instructions.md
+cat backend/controllers/posts/sub_association.md >> instructions.md
 
 echo -e '# Auth\n' >> instructions.md
 cat auth/setup.md >> instructions.md

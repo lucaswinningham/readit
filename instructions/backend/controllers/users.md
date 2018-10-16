@@ -53,7 +53,6 @@ end
 
 ```bash
 $ rspec spec/routing
-$ rubocop
 ```
 
 ###### spec/models/user_spec.rb
@@ -92,7 +91,6 @@ end
 
 ```bash
 $ rspec spec/models
-$ rubocop
 ```
 
 ###### spec/controllers/users_controller_spec.rb
@@ -188,6 +186,10 @@ end
 
 ```
 
+```bash
+$ rails g serializer User name email
+```
+
 ###### app/controllers/users_controller.rb
 
 ```ruby
@@ -195,28 +197,27 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    @users = User.all
-
-    render json: @users
+    users = User.all
+    render json: UserSerializer.new(users)
   end
 
   def show
-    render json: @user
+    render json: UserSerializer.new(@user)
   end
 
   def create
-    @user = User.new(user_params)
+    user = User.new(user_params)
 
-    if @user.save
-      render json: @user, status: :created
+    if user.save
+      render json: UserSerializer.new(user), status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
   def update
     if @user.update(user_params)
-      render json: @user
+      render json: UserSerializer.new(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end
