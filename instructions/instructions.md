@@ -5,12 +5,14 @@
     * [Users](#backend-user-model)
     * [Subs](#backend-sub-model)
     * [Posts](#backend-post-model)
-      * [User Association](#backend-user-post-association)
-      * [Sub Association](#backend-sub-post-association)
+      * [User Association](#backend-user-post-model-association)
+      * [Sub Association](#backend-sub-post-model-association)
   * [Controllers](#backend-controllers)
     * [Users](#backend-users-controller)
     * [Subs](#backend-subs-controller)
     * [Posts](#backend-posts-controller)
+      * [User Association](#backend-user-post-controller-association)
+      * [Sub Association](#backend-sub-post-controller-association)
 * [Auth](#auth)
 
 # Reset
@@ -538,7 +540,7 @@ $ rspec
 $ rubocop
 ```
 
-#### Backend User Post Association
+#### Backend User Post Model Association
 
 ###### spec/models/user_spec.rb
 
@@ -595,7 +597,7 @@ $ rspec
 $ rubocop
 ```
 
-#### Backend Sub Post Association
+#### Backend Sub Post Model Association
 
 ###### spec/models/sub_spec.rb
 
@@ -733,7 +735,6 @@ end
 
 ```bash
 $ rspec spec/routing
-$ rubocop
 ```
 
 ###### spec/models/user_spec.rb
@@ -772,7 +773,6 @@ end
 
 ```bash
 $ rspec spec/models
-$ rubocop
 ```
 
 ###### spec/controllers/users_controller_spec.rb
@@ -868,6 +868,10 @@ end
 
 ```
 
+```bash
+$ rails g serializer User name email
+```
+
 ###### app/controllers/users_controller.rb
 
 ```ruby
@@ -875,28 +879,27 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    @users = User.all
-
-    render json: @users
+    users = User.all
+    render json: UserSerializer.new(users)
   end
 
   def show
-    render json: @user
+    render json: UserSerializer.new(@user)
   end
 
   def create
-    @user = User.new(user_params)
+    user = User.new(user_params)
 
-    if @user.save
-      render json: @user, status: :created
+    if user.save
+      render json: UserSerializer.new(user), status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
   def update
     if @user.update(user_params)
-      render json: @user
+      render json: UserSerializer.new(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -1003,7 +1006,6 @@ end
 
 ```bash
 $ rspec spec/routing
-$ rubocop
 ```
 
 ###### spec/models/sub_spec.rb
@@ -1038,7 +1040,6 @@ end
 
 ```bash
 $ rspec spec/models
-$ rubocop
 ```
 
 ###### spec/controllers/subs_controller_spec.rb
@@ -1133,6 +1134,10 @@ end
 
 ```
 
+```bash
+$ rails g serializer Sub name
+```
+
 ###### app/controllers/subs_controller.rb
 
 ```ruby
@@ -1140,28 +1145,28 @@ class SubsController < ApplicationController
   before_action :set_sub, only: %i[show update destroy]
 
   def index
-    @subs = Sub.all
+    subs = Sub.all
 
-    render json: @subs
+    render json: SubSerializer.new(subs)
   end
 
   def show
-    render json: @sub
+    render json: SubSerializer.new(@sub)
   end
 
   def create
-    @sub = Sub.new(sub_params)
+    sub = Sub.new(sub_params)
 
-    if @sub.save
-      render json: @sub, status: :created
+    if sub.save
+      render json: SubSerializer.new(sub), status: :created
     else
-      render json: @sub.errors, status: :unprocessable_entity
+      render json: sub.errors, status: :unprocessable_entity
     end
   end
 
   def update
     if @sub.update(sub_params)
-      render json: @sub
+      render json: SubSerializer.new(@sub)
     else
       render json: @sub.errors, status: :unprocessable_entity
     end
@@ -1305,6 +1310,10 @@ Rails.application.routes.draw do
   resources :subs, param: :name, concerns: sub_concerns
 end
 
+```
+
+```bash
+$ rspec spec/routing
 ```
 
 ###### spec/controllers/posts_controller_spec.rb
@@ -1498,6 +1507,10 @@ end
 
 ```
 
+```bash
+$ rails g serializer Post title url body active
+```
+
 ###### app/controllers/posts_controller.rb
 
 ```ruby
@@ -1509,20 +1522,22 @@ class PostsController < ApplicationController
     sub = Sub.find_by_name params[:sub_name]
     posts = (user || sub).posts
 
-    render json: posts
+    render json: PostSerializer.new(posts)
   end
 
   def show
-    render json: @post
+    render json: PostSerializer.new(@post)
   end
 
   def create
     post = Post.new(post_params)
-    set_user && set_sub
-    post.assign_attributes user_id: @user.id, sub_id: @sub.id
+    user = User.find_by_name(params[:user_name]) || User.find(post_params[:user_id])
+    sub = Sub.find_by_name(params[:sub_name]) || Sub.find(post_params[:sub_id])
+
+    post.assign_attributes user_id: user.id, sub_id: sub.id
 
     if post.save
-      render json: post, status: :created
+      render json: PostSerializer.new(post), status: :created
     else
       render json: post.errors, status: :unprocessable_entity
     end
@@ -1530,7 +1545,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      render json: @post
+      render json: PostSerializer.new(@post)
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -1544,14 +1559,6 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find(params[:id])
-  end
-
-  def set_user
-    @user = User.find_by_name(params[:user_name]) || User.find(post_params[:user_id])
-  end
-
-  def set_sub
-    @sub = Sub.find_by_name(params[:sub_name]) || Sub.find(post_params[:sub_id])
   end
 
   def post_params
@@ -1588,6 +1595,26 @@ $ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
 $ curl -X DELETE http://localhost:3000/users/reddituser/posts/5 | jq
 $ curl -X GET http://localhost:3000/users/reddituser/posts/5 | jq
 ```
+
+#### Backend User Post Controller Association
+
+###### backend/app/serializers/user_serializer.rb
+
+```ruby
+
+```
+
+<!-- bash proof -->
+
+#### Backend Sub Post Controller Association
+
+###### backend/app/serializers/sub_serializer.rb
+
+```ruby
+
+```
+
+<!-- bash proof -->
 
 # Auth
 
@@ -1842,7 +1869,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      render json: UserPrivateSerializer.new(@user)
+      render json: SessionSerializer.new(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end
