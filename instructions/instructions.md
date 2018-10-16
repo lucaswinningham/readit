@@ -668,7 +668,9 @@ module Backend
   class Application < Rails::Application
     ...
 
+    #
     # Added
+    #
 
     config.generators do |g|
       g.test_framework :rspec, request_specs: false
@@ -679,6 +681,16 @@ end
 ```
 
 <!-- factory setup stuff -->
+
+###### Gemfile
+
+```ruby
+...
+
+# Use Netflix's serializers
+gem 'fast_jsonapi'
+
+```
 
 ### Backend Users Controller
 
@@ -1811,7 +1823,7 @@ end
 ```ruby
 class UsersController < ApplicationController
   before_action :authenticate_user!, only: %i[update destroy]
-  ...
+  before_action :set_user, only: %i[show update destroy]
 
   # def index
   #   @users = User.all
@@ -1820,7 +1832,7 @@ class UsersController < ApplicationController
   # end
 
   def show
-    render json: UserShowSerializer.new(@user)
+    render json: UserSerializer.new(@user)
   end
 
   def create
@@ -1833,19 +1845,19 @@ class UsersController < ApplicationController
 
     if user.save
       session = user.make_session
-      render json: SessionCreateSerializer.new(session), status: :created
+      render json: SessionSerializer.new(session), status: :created
     else
       render json: user.errors, status: :unprocessable_entity
     end
   end
 
-  # def update
-  #   if @user.update(user_params)
-  #     render json: @user
-  #   else
-  #     render json: @user.errors, status: :unprocessable_entity
-  #   end
-  # end
+  def update
+    if @user.update(user_params)
+      render json: UserPrivateSerializer.new(@user)
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
 
   def destroy
     current_user.destroy
@@ -1853,7 +1865,9 @@ class UsersController < ApplicationController
 
   private
 
-  ...
+  def set_user
+    @user = User.find_by_name!(params[:name])
+  end
 
   def create_params
     params.require(:user).permit(:name, :email, :token)
@@ -1936,7 +1950,7 @@ class SaltsController < ApplicationController
       render json: SaltShowSerializer.new(@user.salt)
     else
       salt = Salt.new(salt_string: Salt.generate_salt)
-      render json: SaltShowSerializer.new(salt)
+      render json: SaltSerializer.new(salt)
     end
   end
 
@@ -2031,7 +2045,7 @@ class NoncesController < ApplicationController
     nonce = @user.build_nonce(nonce_creation_attributes)
 
     if nonce.save
-      render json: NonceCreateSerializer.new(nonce), status: :created
+      render json: NonceSerializer.new(nonce), status: :created
     else
       render json: nonce.errors, status: :unprocessable_entity
     end
@@ -2109,7 +2123,7 @@ class SessionsController < ApplicationController
 
     @user.nonce.destroy
     session = @user.make_session
-    render json: SessionCreateSerializer.new(session), status: :created
+    render json: SessionSerializer.new(session), status: :created
   end
 
   private
