@@ -293,6 +293,19 @@ end
 $ rails g serializer Post title url body active
 ```
 
+<!-- figure out how to return user and sub names and not their id using the fast json api -->
+###### app/serializers/post_serializer.rb
+
+```ruby
+class PostSerializer
+  ...
+
+  belongs_to :user
+  belongs_to :sub
+end
+
+```
+
 ###### app/controllers/posts_controller.rb
 
 ```ruby

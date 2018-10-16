@@ -187,6 +187,17 @@ end
 $ rails g serializer Sub name
 ```
 
+###### app/serializers/sub_serializer.rb
+
+```ruby
+class SubSerializer
+  ...
+
+  has_many :posts
+end
+
+```
+
 ###### app/controllers/subs_controller.rb
 
 ```ruby

@@ -872,6 +872,17 @@ end
 $ rails g serializer User name email
 ```
 
+###### app/serializers/user_serializer.rb
+
+```ruby
+class UserSerializer
+  ...
+
+  has_many :posts
+end
+
+```
+
 ###### app/controllers/users_controller.rb
 
 ```ruby
@@ -1136,6 +1147,17 @@ end
 
 ```bash
 $ rails g serializer Sub name
+```
+
+###### app/serializers/sub_serializer.rb
+
+```ruby
+class SubSerializer
+  ...
+
+  has_many :posts
+end
+
 ```
 
 ###### app/controllers/subs_controller.rb
@@ -1509,6 +1531,19 @@ end
 
 ```bash
 $ rails g serializer Post title url body active
+```
+
+<!-- figure out how to return user and sub names and not their id using the fast json api -->
+###### app/serializers/post_serializer.rb
+
+```ruby
+class PostSerializer
+  ...
+
+  belongs_to :user
+  belongs_to :sub
+end
+
 ```
 
 ###### app/controllers/posts_controller.rb

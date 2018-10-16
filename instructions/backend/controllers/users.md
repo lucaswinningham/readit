@@ -190,6 +190,17 @@ end
 $ rails g serializer User name email
 ```
 
+###### app/serializers/user_serializer.rb
+
+```ruby
+class UserSerializer
+  ...
+
+  has_many :posts
+end
+
+```
+
 ###### app/controllers/users_controller.rb
 
 ```ruby
