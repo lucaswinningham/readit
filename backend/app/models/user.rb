@@ -24,12 +24,6 @@ class User < ActiveRecord::Base
     self.password_digest = BCrypt::Password.create(unencrypted_password)
   end
 
-  def make_session
-    payload = { sub: name }
-    token = JwtService.encode(payload: payload)
-    OpenStruct.new({ id: nil, user_name: name, token: token })
-  end
-
   private
 
   def deactivate_posts

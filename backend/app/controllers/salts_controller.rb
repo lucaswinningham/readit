@@ -3,8 +3,7 @@ class SaltsController < ApplicationController
 
   def show
     if @user
-      # render json: SaltShowSerializer.new(@user.salt)
-      render json: @user.salt
+      render json: SaltSerializer.new(@user.salt)
     else
       salt = Salt.new(salt_string: Salt.generate_salt)
       render json: SaltSerializer.new(salt)
