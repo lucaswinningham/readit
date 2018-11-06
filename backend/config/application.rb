@@ -38,7 +38,7 @@ module Backend
       g.test_framework :rspec, request_specs: false
     end
 
-    ['app/serializers', 'lib'].each do |path|
+    ['app/serializers', 'lib', 'test/support'].each do |path|
       config.eager_load_paths << Rails.root.join(path)
     end
   end

@@ -18,7 +18,13 @@ echo '    * [Posts](#backend-posts-controller)' >> instructions.md
 echo '      * [User Association](#backend-user-post-controller-association)' >> instructions.md
 echo '      * [Sub Association](#backend-sub-post-controller-association)' >> instructions.md
 
+echo '* [Frontend](#frontend)' >> instructions.md
+echo '  * [Http](#frontend-http)' >> instructions.md
+echo '  * [Models](#frontend-models)' >> instructions.md
+
 echo '* [Auth](#auth)' >> instructions.md
+echo '  * [Backend](#auth-backend)' >> instructions.md
+echo '  * [Frontend](#auth-frontend)' >> instructions.md
 
 echo '' >> instructions.md
 
@@ -30,6 +36,8 @@ cat setup/installs.md >> instructions.md
 
 echo -e '# Setup\n' >> instructions.md
 cat setup/setup.md >> instructions.md
+
+
 
 echo -e '# Backend\n' >> instructions.md
 cat backend/setup.md >> instructions.md
@@ -70,5 +78,24 @@ cat backend/controllers/posts/user_association.md >> instructions.md
 echo -e '#### Backend Sub Post Controller Association\n' >> instructions.md
 cat backend/controllers/posts/sub_association.md >> instructions.md
 
+
+
+echo -e '# Frontend\n' >> instructions.md
+cat frontend/setup.md >> instructions.md
+
+echo -e '## Frontend Http\n' >> instructions.md
+cat frontend/http/setup.md >> instructions.md
+
+echo -e '## Frontend Models\n' >> instructions.md
+cat frontend/models/setup.md >> instructions.md
+
+
+
 echo -e '# Auth\n' >> instructions.md
 cat auth/setup.md >> instructions.md
+
+echo -e '# Auth Backend\n' >> instructions.md
+cat auth/backend/setup.md >> instructions.md
+
+echo -e '# Auth Frontend\n' >> instructions.md
+cat auth/frontend/setup.md >> instructions.md

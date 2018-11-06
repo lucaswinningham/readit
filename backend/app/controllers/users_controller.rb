@@ -2,14 +2,19 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, only: %i[update destroy]
   before_action :set_user, only: %i[show update destroy]
 
-  # def index
-  #   @users = User.all
+  def index
+    @users = User.all
 
-  #   render json: @users
-  # end
+    render json: UserSerializer.new(@users)
+  end
 
   def show
-    render json: UserSerializer.new(@user)
+    if @user
+      render json: UserSerializer.new(@user)
+    else
+      json = { error: "User does not exist." }
+      render json: json, status: :not_found
+    end
   end
 
   def create
@@ -40,7 +45,7 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find_by_name! params[:name]
+    @user = User.find_by_name params[:name]
   end
 
   def raw_params
