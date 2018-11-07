@@ -21,10 +21,14 @@ echo '      * [Sub Association](#backend-sub-post-controller-association)' >> in
 echo '* [Frontend](#frontend)' >> instructions.md
 echo '  * [Http](#frontend-http)' >> instructions.md
 echo '  * [Models](#frontend-models)' >> instructions.md
+echo '    * [Heartbeats](#frontend-heartbeat-model)' >> instructions.md
+echo '    * [Users](#frontend-user-model)' >> instructions.md
+echo '    * [Subs](#frontend-sub-model)' >> instructions.md
+echo '    * [Posts](#frontend-post-model)' >> instructions.md
 
 echo '* [Auth](#auth)' >> instructions.md
-echo '  * [Backend](#auth-backend)' >> instructions.md
-echo '  * [Frontend](#auth-frontend)' >> instructions.md
+echo '  * [Salt](#auth-salt)' >> instructions.md
+echo '  * [Cipher](#auth-cipher)' >> instructions.md
 
 echo '' >> instructions.md
 
@@ -89,13 +93,25 @@ cat frontend/http/setup.md >> instructions.md
 echo -e '## Frontend Models\n' >> instructions.md
 cat frontend/models/setup.md >> instructions.md
 
+echo -e '### Frontend Heartbeat Model\n' >> instructions.md
+cat frontend/models/heartbeats.md >> instructions.md
+
+echo -e '### Frontend User Model\n' >> instructions.md
+cat frontend/models/users.md >> instructions.md
+
+echo -e '### Frontend Sub Model\n' >> instructions.md
+cat frontend/models/subs.md >> instructions.md
+
+echo -e '### Frontend Post Model\n' >> instructions.md
+cat frontend/models/posts.md >> instructions.md
+
 
 
 echo -e '# Auth\n' >> instructions.md
 cat auth/setup.md >> instructions.md
 
-echo -e '# Auth Backend\n' >> instructions.md
-cat auth/backend/setup.md >> instructions.md
+echo -e '# Auth Salt\n' >> instructions.md
+cat auth/salt.md >> instructions.md
 
-echo -e '# Auth Frontend\n' >> instructions.md
-cat auth/frontend/setup.md >> instructions.md
+echo -e '# Auth Cipher\n' >> instructions.md
+cat auth/cipher.md >> instructions.md

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
-import { catchError, map, tap } from 'rxjs/operators';
+// import { catchError, map, tap } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
-import { LogService } from '@services/log.service';
-import { RequestService } from '@services/request.service';
+// import { environment } from '@app/environments/environment';
+import { environment } from '../../../../environments/environment';
+import { LogService } from '@services/utils/log.service';
+import { RequestService } from '@services/utils/request.service';
 
 import * as _ from 'lodash';
 
@@ -15,19 +16,19 @@ export class ApiService {
 
   constructor(private http: HttpClient, private logger: LogService, private req: RequestService) { }
 
+  read<T>(route: string, param: string | number = ''): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}/${param}`;
+    const observable = this.http.get<T>(endpoint);
+    this.logger.log(`ApiService: +read(): route="/${route}/${param}"`);
+    return this.req.process<T>(observable, { method: 'GET', route: `/${route}/${param}` });
+  }
+
   // list<T>(route: string, params: any = {}): Observable<T[]> {
   //   const endpoint = `${this.apiUrl}/${route}`;
   //   const observable = this.http.get<T[]>(endpoint, { params });
   //   this.logger.log(`ApiService: +list(): route="/${route}", params=`, params);
   //   return this.req.process<T[]>(observable, { method: 'GET', route });
   // }
-
-  list(route: string, params: any = {}): Observable<any> {
-    const endpoint = `${this.apiUrl}/${route}`;
-    const observable = this.http.get(endpoint, { params });
-    this.logger.log(`ApiService: +list(): route="/${route}", params=`, params);
-    return this.req.process(observable, { method: 'GET', route });
-  }
 }
 
 // import { Injectable } from '@angular/core';

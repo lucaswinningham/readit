@@ -11,7 +11,7 @@ export class ModelSuper {
     this.type = params.type;
   }
 
-  protected snakeify(): any {
+  snakeify(): any {
     const { id, type } = this;
     return { id, type };
   }

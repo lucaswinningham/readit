@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { LogService } from '@services/log.service';
-import { TransformService } from '@services/transform.service';
+import { LogService } from '@services/utils/log.service';
+import { TransformService } from '@services/utils/transform.service';
 
 @Injectable()
 export class RequestService {

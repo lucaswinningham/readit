@@ -56,12 +56,26 @@ First, we need a service to serialize and deserialize JSON.
 
 ```bash
 $ cd frontend/
-$ ng g s shared/services/transform --module=shared
+$ ng g s shared/services/utils/transform --module=shared/services/utils
 ```
 
-###### src/app/shared/services/transform.service.ts
+###### src/app/shared/services/utils/transform.service.ts
 
 ```ts
+import { Injectable } from '@angular/core';
+
+import * as _ from 'lodash';
+
+@Injectable()
+export class TransformService {
+  deserialize<T>(json: any): T {
+    const { id, type, attributes } = json['data'];
+    let { relationships } = data;
+    relationships = _.mapValues(relationships, value => this.deserialize(value));
+
+    return { id, type, ...attributes, ...relationships };
+  }
+}
 
 ```
 
@@ -69,26 +83,85 @@ We also need a service to process api requests.
 
 ```bash
 $ cd frontend/
-$ ng g s shared/services/request --module=shared
+$ ng g s shared/services/utils/request --module=shared/services/utils
 ```
 
-###### src/app/shared/services/request.service.ts
+###### src/app/shared/services/utils/request.service.ts
 
 ```ts
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+import { catchError, map, tap } from 'rxjs/operators';
+
+import { LogService } from '@services/utils/log.service';
+import { TransformService } from '@services/utils/transform.service';
+
+@Injectable()
+export class RequestService {
+  constructor(private logger: LogService, private transformer: TransformService) { }
+
+  process<T>(observable: Observable<T>, info: { method: string, route: string }): Observable<T> {
+    const { method, route } = info;
+    return observable.pipe(
+      catchError(this.catchError<T>({ method, route })),
+      tap(json => this.report({ method, route, json })),
+      map(json => this.transformer.deserialize<T>(json)),
+    );
+  }
+
+  private catchError<T>(args: { method: string, route: string }): (error: any) => Observable<T> {
+    const { method, route } = args;
+    const message = `RequestService: +process(): method="${method}", route="/${route}", error=`;
+    return (error: any): Observable<T> => {
+      this.logger.error(message, error);
+      return Observable.throw(error);
+    };
+  }
+
+  private report(args: { method: string, route: string, json: any }): void {
+    const { method, route, json } = args;
+    const message = `RequestService: +process(): method="${method}", route="/${route}", json=`;
+    this.logger.log(message, json)
+  }
+}
 
 ```
 
-For now, we're just going to have an indexing method for a resource.
+For now, we're just going to have a read method for a resource.
 We need a palatable service for other components and services to communicate with the backend.
 
 ```bash
-$ ng g s shared/services/api --module=shared
+$ ng g s shared/services/utils/api --module=shared/services/utils
 ```
 
-###### src/app/shared/services/api.service.ts
+###### src/app/shared/services/utils/api.service.ts
 
 ```ts
-...
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Rx';
+// import { catchError, map, tap } from 'rxjs/operators';
+
+// import { environment } from '@app/environments/environment';
+import { environment } from '../../../../environments/environment';
+import { LogService } from '@services/utils/log.service';
+import { RequestService } from '@services/utils/request.service';
+
+import * as _ from 'lodash';
+
+@Injectable()
+export class ApiService {
+  private apiUrl: string = environment.apiUrl;
+
+  constructor(private http: HttpClient, private logger: LogService, private req: RequestService) { }
+
+  read<T>(route: string, param: string | number = ''): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}/${param}`;
+    const observable = this.http.get<T>(endpoint);
+    this.logger.log(`ApiService: +read(): route="/${route}/${param}"`);
+    return this.req.process<T>(observable, { method: 'GET', route: `/${route}/${param}` });
+  }
+}
 ```
 
 Need to let the api service know the backend url.
@@ -102,6 +175,12 @@ export const environment = {
 };
 
 ```
+
+
+<!--  -->
+<!-- DELETE EVERYTHING BELOW -->
+<!--  -->
+
 
 Drop the database so far and seed it.
 

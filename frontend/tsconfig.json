@@ -22,6 +22,7 @@
 
     "baseUrl": "src",
     "paths": {
+      "@app/*": [ "app/*" ],
       "@services/*": [ "app/shared/services/*" ],
       "@models/*": [ "app/shared/models/*" ]
     }

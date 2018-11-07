@@ -15,9 +15,9 @@ export class TransformService {
 
     const data = json['data'] || json;
 
-    if (_.isArray(data)) {
-      return data.map(resource => this.deserialize(resource));
-    }
+    // if (_.isArray(data)) {
+    //   return data.map(resource => this.deserialize(resource));
+    // }
 
     const { id, type, attributes } = data;
     let { relationships } = data;

@@ -11,26 +11,51 @@ $ cd frontend/
 
 ```
 
+We are going to have app wide shared components, models and services.
+
+<!-- TODO: figure out why this needed the --routing flag -->
 ```bash
 $ ng g m shared --routing --module=app
 ```
 
+Now that we have a shared module that will let the app module know about everything in the src/app/shared folder, we can create more modules to go into it.
+For a separation of concerns, we're going to create some modules upfront that will bubble upstream to the app module through the shared module.
+Let's create a module for services that will be used throughout the app.
+
 ```bash
-$ ng g s shared/services/log --module=shared
+$ ng g m shared/services --module=shared
 ```
 
-###### src/app/shared/services/log.service.ts
+Now that we have shared services module, we can further seperate some services we're going to be focusing on now that will be used as utilities even within each other.
+
+Now that we have 
+
+```bash
+$ ng g m shared/services/utils --module=shared/services
+```
+
+With our utility service module in place, we're ready create some of the utility services.
+Let's start with a logging service that will act almost exactly like console.log() but with one difference.
+When we get a logging api in place, it will be able to not only log (or not log) to the console any errors but also will be able to log to the logging api to notify us as developers of any errors in other ways such as slack, email etc.
+
+```bash
+$ ng g s shared/services/utils/log --module=shared/services/utils
+```
+
+<!-- TODO: change to absolute path once @app is resolved -->
+###### src/app/shared/services/utils/log.service.ts
 
 ```ts
 import { Injectable } from '@angular/core';
 
-import { environment } from '../../../environments/environment';
+// import { environment } from '@app/environments/environment';
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class LogService {
   error(...messages: any[]): void {
     this.toConsole('error', messages);
-    this.toLogger('error', messages);
+    this.toLoggingApi('error', messages);
   }
 
   info(...messages: any[]): void {
@@ -43,7 +68,7 @@ export class LogService {
 
   warn(...messages: any[]): void {
     this.toConsole('warn', messages);
-    this.toLogger('warn', messages);
+    this.toLoggingApi('warn', messages);
   }
 
   private toConsole(method: string, messages: any[]): void {
@@ -52,7 +77,7 @@ export class LogService {
     }
   }
 
-  private toLogger(method: string, messages: any[]): void {
+  private toLoggingApi(method: string, messages: any[]): void {
     if (environment.production) {
       // log to external logging service
     }
@@ -61,8 +86,9 @@ export class LogService {
 
 ```
 
-Want to be able to use absolute paths instead of relative paths for services.
+Want to be able to use absolute paths instead of relative paths for importing services and the environment.
 
+<!-- TODO: make @app work -->
 ###### tsconfig.json
 
 ```json
@@ -77,6 +103,7 @@ Want to be able to use absolute paths instead of relative paths for services.
 
     "baseUrl": "src",
     "paths": {
+      // "@app/*": [ "app/*" ],
       "@services/*": [ "app/shared/services/*" ]
     }
   }
@@ -93,7 +120,7 @@ Notify the developer that the app has successfully loaded the high level app com
 ```ts
 import { Component, OnInit } from '@angular/core';
 
-import { LogService } from '@services/log.service';
+import { LogService } from '@services/utils/log.service';
 
 @Component({
   selector: 'app-root',

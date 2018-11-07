@@ -10,4 +10,6 @@ Rails.application.routes.draw do
   resources :subs, param: :name, concerns: sub_concerns
 
   resources :sessions, only: :create
+
+  resource :heartbeat, only: :show
 end
