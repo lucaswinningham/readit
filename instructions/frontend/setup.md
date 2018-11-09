@@ -4,16 +4,70 @@ $ ng new frontend --style=scss
 $ cd frontend/
 ```
 
-###### src/app/app.component.html
+Let's start by making a home page.
+This home page will be where users will eventually see posts and interact with them but for now, we're going to use it to just display this new sub component.
+We need to organize our app components in a sensible way. We're going to make a pages directory that will contain all the pages for the app.
+Inside each page component will be a components directory specifically used for that page component.
+Let's create this pages directory by making a module.
 
-```html
-<!-- purposefully left blank -->
+```bash
+$ ng g m pages --routing --module=app
+```
+
+Now let's make a home page module for separating concerns for the home page.
+Let's create the home page component, too.
+
+```bash
+$ ng g m pages/home --routing --module=pages
+$ ng g c pages/home --module=pages/home --export
+```
+
+In order to see this component we'll need to redirect users to it when they come to the page.
+To do this we'll need to modify the app router to load it.
+
+<!-- TODO: figure out if there's a way to more easily import this home component -->
+###### frontend/src/app/app-routing.module.ts
+
+```ts
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { HomeComponent } from 'app/pages/home/home.component';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
 
 ```
 
+The last modification we need in the app component html to give the router an outlet.
+
+###### src/app/app.component.html
+
+```html
+<router-outlet></router-outlet>
+
+```
+
+Now if we serve the app, we should be able to see some text showing us that the home component is loaded and rendered.
+
+```bash
+$ ng serve
+```
+
+[Navigate to app](http://localhost:4200/)
+
 We are going to have app wide shared components, models and services.
+Let's create a module for that which will be the gateway for all shared things and will be imported by the app module.
 
 <!-- TODO: figure out why this needed the --routing flag -->
+<!-- try ng g m bogus --routing --module=app --dry-run to see what if anything happened with the --routing flag and delete or elaborate above on it why it's needed. -->
 ```bash
 $ ng g m shared --routing --module=app
 ```
@@ -27,8 +81,6 @@ $ ng g m shared/services --module=shared
 ```
 
 Now that we have shared services module, we can further seperate some services we're going to be focusing on now that will be used as utilities even within each other.
-
-Now that we have 
 
 ```bash
 $ ng g m shared/services/utils --module=shared/services
@@ -86,7 +138,8 @@ export class LogService {
 
 ```
 
-Want to be able to use absolute paths instead of relative paths for importing services and the environment.
+<!-- Want to be able to use absolute paths instead of relative paths for importing services and the environment. -->
+Want to be able to use absolute paths instead of relative paths for importing services.
 
 <!-- TODO: make @app work -->
 ###### tsconfig.json

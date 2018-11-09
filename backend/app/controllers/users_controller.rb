@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: %i[update destroy]
+  # before_action :authenticate_user!, only: %i[update destroy]
   before_action :set_user, only: %i[show update destroy]
 
   def index
@@ -29,6 +29,16 @@ class UsersController < ApplicationController
       render json: user.errors, status: :unprocessable_entity
     end
   end
+
+  # def create
+  #   user = User.new raw_params
+
+  #   if user.save
+  #     render json: UserSerializer.new(user), status: :created
+  #   else
+  #     render json: user.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # def update
   #   if @user.update(user_params)

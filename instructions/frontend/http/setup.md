@@ -6,8 +6,10 @@ First, we need to import `HttpClientModule` in the app-wide module.
 
 ```ts
 ...
-
 import { HttpClientModule } from '@angular/common/http';
+
+
+...
 
 @NgModule({
   ...,
@@ -86,6 +88,7 @@ $ cd frontend/
 $ ng g s shared/services/utils/request --module=shared/services/utils
 ```
 
+<!-- change -report to return function, see model service -->
 ###### src/app/shared/services/utils/request.service.ts
 
 ```ts
@@ -109,19 +112,19 @@ export class RequestService {
     );
   }
 
-  private catchError<T>(args: { method: string, route: string }): (error: any) => Observable<T> {
+  private catchError(args: { method: string, route: string }): (error: any) => Observable<any> {
     const { method, route } = args;
-    const message = `RequestService: +process(): method="${method}", route="/${route}", error=`;
-    return (error: any): Observable<T> => {
-      this.logger.error(message, error);
+    const message = `RequestService: +process(): method="${method}", route="${route}"`;
+    return (error: any): Observable<any> => {
+      this.logger.error(message);
       return Observable.throw(error);
     };
   }
 
   private report(args: { method: string, route: string, json: any }): void {
     const { method, route, json } = args;
-    const message = `RequestService: +process(): method="${method}", route="/${route}", json=`;
-    this.logger.log(message, json)
+    const message = `RequestService: +process(): method="${method}", route="${route}", json=`;
+    this.logger.log(message, json);
   }
 }
 
@@ -171,7 +174,7 @@ Need to let the api service know the backend url.
 ```ts
 export const environment = {
   ...,
-  apiUrl: 'http://localhost:3000/'
+  apiUrl: 'http://localhost:3000'
 };
 
 ```

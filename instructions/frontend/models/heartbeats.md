@@ -1,7 +1,7 @@
 A good place to start would be the idea of a heartbeat signal from the frontend to the backend.
+This heartbeat is useful in knowing that the frontend is connected to the backend and is able to communicate with it.
 For that, we need to make a heartbeat resource on the backend.
-We don't necessarily need a heartbeat model in the database.
-We only need a heartbeat endpoint that the frontend can call and the backend responds with anything such that we know we have a connection to the backend.
+We don't necessarily need a heartbeat model in the database, just a controller that can send something, anything back when a request is made.
 
 ```bash
 $ cd ../backend/
@@ -56,8 +56,6 @@ $ ng g class shared/models/heartbeat --type=model
 ###### frontend/src/app/shared/models/heartbeat.model.ts
 
 ```ts
-import * as _ from 'lodash';
-
 export class Heartbeat {
   readonly id: number;
   readonly type: string;
@@ -70,9 +68,12 @@ export class Heartbeat {
 
 ```
 
+This model will be used in the transaction between JSON response from the backend and serviing a typed object to whatever requested it. In the constructor, the JSON object will be the input and the object will be of type `Heartbeat`.
+
 We're going to be making more models that will share some of the same attributes and functionality as this heartbeat model.
 Let's abstract out the common attributes and functionality.
-Each model with have to be able to change its keys to snake case for the backend to read.
+Each model will need to have a constructor that will change JSON object's keys from snake case to camel case that is used as accepted javascript style.
+Each model with have to be able to change its keys to snake case for the backend to read for `POST` and `PATCH` requests.
 An interface is useful here to ensure that each model will be able to do these things.
 
 ```bash
@@ -88,7 +89,10 @@ export interface ModelInterface {
 
 ```
 
+Each model we create should have `implements ModelInterface` declared which enforces that it implements the interface's `snakeify` method.
+
 Each model we create from now on will have the same common `id` and `type` attributes.
+This is because we're using Netflix's fastjson api for serialization.
 Inheritance is useful here to DRY up the models.
 
 ```bash
@@ -119,13 +123,14 @@ export class ModelSuper {
 
 ```
 
+Each model we create should have `extends ModelSuper` declared which will let it have `id` and `type` attributes virtually for free.
+
+With inheritance and an interface in place, we can start using them with the `Heartbeat` model.
 Let's change our heartbeat model to use the super model and the model interface.
 
 ###### frontend/src/app/shared/models/heartbeat.model.ts
 
 ```ts
-import * as _ from 'lodash';
-
 import { ModelInterface } from './model.interface';
 import { ModelSuper } from './model.super';
 
@@ -133,7 +138,7 @@ export class Heartbeat extends ModelSuper implements ModelInterface { }
 
 ```
 
-It doesn't look like anything now but with other models that will actually have attributes, the super model and the model interface will come into play heavily.
+It doesn't look like anything now but with other models that will actually have more than `id` and `type` attributes, the super model and the model interface will come into play heavily.
 Now that we have our heartbeat model in place for the frontend, let's make a service that is palatable for other services / components to communicate to the backend.
 We're going to separate the model services from the other shared utility services.
 
@@ -147,14 +152,16 @@ With the model service module properly separated from the utility service module
 $ ng g s shared/services/models/heartbeat --module=shared/services/models
 ```
 
-This heartbeat model service will be the go-between for other components and services and will communicate with the api service directly for them so they dont have to. This service will have a single read method that will log a successful heartbeat otherwise will log an error that the heartbeat failed.
+This heartbeat model service will be the go-between for other components and services and will communicate with the api service directly for them so they dont have to. This service will have a single read method that will log a successful heartbeat otherwise it will log an error that the heartbeat failed. Other model services will have all CRUD actions available. These services will handle logging errors, transforming responses with models and other features so that other components / services need only consume typed responses.
+
+###### frontend/src/app/shared/services/models/heartbeat.service.spec.ts
 
 ###### frontend/src/app/shared/services/models/heartbeat.service.ts
 
 ```ts
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { ApiService } from '@services/utils/api.service';
 import { LogService } from '@services/utils/log.service';
@@ -167,10 +174,11 @@ export class HeartbeatService {
   read(): Observable<Heartbeat> {
     return this.api.read<Heartbeat>('heartbeat').pipe(
       catchError(error => {
-        this.logger.error('Heartbeat failure.', error);
+        this.logger.error('HeartbeatService: +read(): failure.');
         return Observable.throw(error);
       }),
-      tap(() => this.logger.log('Heartbeat success.'))
+      tap(() => this.logger.log('HeartbeatService: +read(): success.')),
+      map(heartbeat => new Heartbeat(heartbeat))
     );
   }
 }
@@ -210,5 +218,7 @@ $ ng serve
 
 [Navigate to app](http://localhost:4200/)
 
-Should see "App started." and "Heartbeat success." in the console.
+Should see "App started." and "HeartbeatService: +read(): success." in the console. You should also be able to see the raw JSON response from the backend that returned a heartbeat object.
+
+If you stop the rails server (^C) and refresh the page, you should see "App started." and "HeartbeatService: +read(): failure." in the console.
 

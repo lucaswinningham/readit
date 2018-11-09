@@ -16,6 +16,13 @@ export class ApiService {
 
   constructor(private http: HttpClient, private logger: LogService, private req: RequestService) { }
 
+  create<T>(route: string, body: T | {} = {}): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}`;
+    const observable = this.http.post<T>(endpoint, body);
+    this.logger.log(`ApiService: +create(): route="/${route}", params=`, body);
+    return this.req.process<T>(observable, { method: 'POST', route: `/${route}` });
+  }
+
   read<T>(route: string, param: string | number = ''): Observable<T> {
     const endpoint = `${this.apiUrl}/${route}/${param}`;
     const observable = this.http.get<T>(endpoint);
@@ -23,12 +30,26 @@ export class ApiService {
     return this.req.process<T>(observable, { method: 'GET', route: `/${route}/${param}` });
   }
 
-  // list<T>(route: string, params: any = {}): Observable<T[]> {
-  //   const endpoint = `${this.apiUrl}/${route}`;
-  //   const observable = this.http.get<T[]>(endpoint, { params });
-  //   this.logger.log(`ApiService: +list(): route="/${route}", params=`, params);
-  //   return this.req.process<T[]>(observable, { method: 'GET', route });
-  // }
+  update<T>(route: string, param: string, body: any): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}/${param}`;
+    const observable = this.http.put<T>(endpoint, body);
+    this.logger.log(`ApiService: +update(): route="/${route}/${param}", params=`, body);
+    return this.req.process<T>(observable, { method: 'GET', route });
+  }
+
+  destroy<T>(route: string, param: string): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}/${param}`;
+    const observable = this.http.delete<T>(endpoint);
+    this.logger.log(`ApiService: +destroy(): route="/${route}/${param}"`);
+    return this.req.process(observable, { method: 'DELETE', route: `/${route}/${param}` });
+  }
+
+  list<T>(route: string, params: any = {}): Observable<T> {
+    const endpoint = `${this.apiUrl}/${route}`;
+    const observable = this.http.get<T>(endpoint, { params });
+    this.logger.log(`ApiService: +list(): route="/${route}", params=`, params);
+    return this.req.process<T>(observable, { method: 'GET', route });
+  }
 }
 
 // import { Injectable } from '@angular/core';

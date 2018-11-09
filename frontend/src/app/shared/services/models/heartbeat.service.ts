@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { catchError, tap } from 'rxjs/operators';
 
 import { ApiService } from '@services/utils/api.service';
-import { LogService } from '@services/utils/log.service';
+import { ModelService } from '@services/models/model.service';
 import { Heartbeat } from '@models/heartbeat.model';
 
 @Injectable()
 export class HeartbeatService {
-  constructor(private api: ApiService, private logger: LogService) { }
+  private processArgs = { type: Heartbeat, service: 'HeartbeatService' };
+
+  constructor(private api: ApiService, private modelService: ModelService) { }
 
   read(): Observable<Heartbeat> {
-    return this.api.read<Heartbeat>('heartbeat').pipe(
-      catchError(error => {
-        this.logger.error('Heartbeat failure.', error);
-        return Observable.throw(error);
-      }),
-      tap(() => this.logger.log('Heartbeat success.'))
-    );
+    const method = 'read';
+    const observable = this.api.read<Heartbeat>('heartbeat');
+    return this.modelService.process<Heartbeat>({ observable, method, ...this.processArgs });
   }
 }
